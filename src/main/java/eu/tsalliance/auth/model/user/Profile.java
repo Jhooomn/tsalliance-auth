@@ -1,7 +1,7 @@
 package eu.tsalliance.auth.model.user;
 
 import javax.persistence.*;
-import java.sql.Date;
+import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -18,6 +18,14 @@ public abstract class Profile {
     private String etag;
 
     private Date createdAt;
+
+    public Profile() {}
+    public Profile(String id, String username, String etag, Date createdAt) {
+        this.id = id;
+        this.username = username;
+        this.etag = etag;
+        this.createdAt = createdAt;
+    }
 
     public String getId() {
         return id;

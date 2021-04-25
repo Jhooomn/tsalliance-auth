@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRepository extends JpaRepository<User, String> {
 
-    @Query("select Profile from User u where u.id = ?1")
+    @Query("select new eu.tsalliance.auth.model.user.Profile(u.id, u.username, u.etag, u.createdAt) from User u where u.id = ?1")
     Profile findProfileById(String id);
 
 }
