@@ -1,7 +1,5 @@
 package eu.tsalliance.auth.validator.rules;
 
-import eu.tsalliance.auth.exception.ValidationException;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,36 +33,21 @@ public class NumberRule extends ValidationRule<String> {
     }
 
     @Override
-    public boolean test() throws ValidationException {
-        boolean passed = false;
-
-        if(this.isRequired() && !this.needsValidation()) {
-            if(this.shouldThrowException()) throw new ValidationException(this);
-            else return false;
-        }
-
-        int subjectInt;
-
+    protected void test() {
         try {
-            subjectInt = Integer.parseInt(this.getSubject());
+            int subjectInt = Integer.parseInt(this.getSubject());
 
-            if (this.max != -1) {
-                passed = subjectInt <= this.max;
+            if (this.max != -1 && subjectInt > this.max) {
+                putFailedTest("max", subjectInt, this.max);
             }
 
-            if (this.min != -1) {
-                passed = subjectInt >= this.min;
+            if (this.min != -1 && subjectInt < this.min) {
+                putFailedTest("min", subjectInt, this.min);
             }
 
         } catch (NumberFormatException exception) {
-            passed = false;
+            putFailedTest("isNumber", this.getSubject(), true);
         }
-
-        if(this.shouldThrowException() && !passed) {
-            throw new ValidationException(this);
-        }
-
-        return passed;
     }
 
     @Override
@@ -74,6 +57,7 @@ public class NumberRule extends ValidationRule<String> {
         if(this.max != -1) requirements.put("max", this.max);
         if(this.min != -1) requirements.put("min", this.min);
 
+        requirements.put("isNumber", true);
         requirements.put("required", this.isRequired());
 
         return requirements;

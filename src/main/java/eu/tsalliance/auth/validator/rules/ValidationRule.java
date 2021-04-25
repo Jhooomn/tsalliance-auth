@@ -29,9 +29,8 @@ public abstract class ValidationRule<T> {
 
     /**
      * Execute test
-     * @return True or False
      */
-    public abstract boolean test() throws ValidationException;
+    protected abstract void test();
     public abstract Map<String, Object> getRequirements();
 
     protected boolean isRequired() {
@@ -54,7 +53,39 @@ public abstract class ValidationRule<T> {
         return failedTests;
     }
 
-    public void putFailedTest(String testName, Object foundValue, Object expectedValue) {
+    /**
+     * Run all required tests on a subject
+     * @return True or False
+     * @throws ValidationException ValidationException
+     */
+    public boolean check() throws ValidationException {
+        if(this.needsValidation()) {
+            this.test();
+        } else {
+            if(this.isRequired()) {
+                putFailedTest("required", false, this.isRequired());
+
+                if (this.shouldThrowException()) throw new ValidationException(this);
+                else return false;
+            }
+        }
+
+        boolean passed = getFailedTests().size() <= 0;
+
+        if (this.shouldThrowException() && !passed) {
+            throw new ValidationException(this);
+        }
+
+        return passed;
+    }
+
+    /**
+     * Register a failed test in the registry
+     * @param testName Name of the test
+     * @param foundValue Value that is present
+     * @param expectedValue Value that was expected
+     */
+    protected void putFailedTest(String testName, Object foundValue, Object expectedValue) {
         Map<String, Object> value = new HashMap<>();
         value.put("expected", expectedValue);
         value.put("value", foundValue);
@@ -62,7 +93,11 @@ public abstract class ValidationRule<T> {
         this.failedTests.put(testName, value);
     }
 
-    public boolean needsValidation() {
+    /**
+     * Check if a value exists and therefor if validation is required or not
+     * @return True or False
+     */
+    protected boolean needsValidation() {
         boolean needsValidation;
 
         // Check if subject is null, return false

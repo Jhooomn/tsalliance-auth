@@ -1,7 +1,5 @@
 package eu.tsalliance.auth.validator.rules;
 
-import eu.tsalliance.auth.exception.ValidationException;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,8 +53,7 @@ public class TextRule extends ValidationRule<String> {
     }
 
     @Override
-    public boolean test() throws ValidationException {
-        if(this.needsValidation()) {
+    protected void test() {
             if (this.maxLen != -1 && this.getSubject().length() > this.maxLen) {
                 putFailedTest("maxLen", this.getSubject().length(), this.maxLen);
             }
@@ -71,24 +68,6 @@ public class TextRule extends ValidationRule<String> {
             if (this.alphaNum && !this.getSubject().matches("^[a-zA-Z0-9]*$")) {
                 putFailedTest("alphaNum", false, true);
             }
-
-
-        } else {
-            if(this.isRequired()) {
-                putFailedTest("required", false, this.isRequired());
-
-                if (this.shouldThrowException()) throw new ValidationException(this);
-                else return false;
-            }
-        }
-
-        boolean passed = getFailedTests().size() <= 0;
-
-        if (this.shouldThrowException() && !passed) {
-            throw new ValidationException(this);
-        }
-
-        return passed;
     }
 
     @Override
