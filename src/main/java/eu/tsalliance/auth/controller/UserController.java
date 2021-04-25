@@ -20,7 +20,7 @@ public class UserController {
         return this.userService.findUserById(id);
     }
 
-    @GetMapping()
+    @GetMapping
     public Page<User> getUsers(Pageable pageable) {
         return this.userService.findUsers(pageable);
     }
