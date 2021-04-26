@@ -4,7 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "ts_accounts_discord")
+@Table(name = "ts_linked_discords")
 public class LinkedDiscord extends LinkedAccount {
 
     private String discordId;

@@ -1,4 +1,4 @@
-package eu.tsalliance.auth.model;
+package eu.tsalliance.auth.model.user;
 
 import javax.persistence.*;
 import java.util.ArrayList;

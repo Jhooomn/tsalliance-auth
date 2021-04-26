@@ -6,7 +6,10 @@ import eu.tsalliance.auth.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -15,9 +18,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("{id}")
-    public User getUser(@PathVariable("id") String id) {
-        return this.userService.findUserById(id);
+    @RequestMapping(path = "{id}", method = RequestMethod.GET)
+    public ResponseEntity<User> getUser(@PathVariable("id") String id) {
+        return ResponseEntity.of(this.userService.findUserById(id));
     }
 
     @GetMapping
@@ -26,12 +29,12 @@ public class UserController {
     }
 
     @PostMapping
-    public User createUser(@RequestBody User user) throws ValidationException {
-        return this.userService.createUser(user);
+    public User createUser(@RequestBody User user) throws Exception {
+        return this.userService.createUser(user, true);
     }
 
     @PutMapping("{id}")
-    public User updateUser(@PathVariable("id") String id, @RequestBody User user) throws ValidationException {
+    public User updateUser(@PathVariable("id") String id, @RequestBody User user) throws Exception {
         return this.userService.updateUser(id, user);
     }
 
