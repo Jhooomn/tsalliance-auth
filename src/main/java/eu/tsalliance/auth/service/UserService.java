@@ -3,6 +3,7 @@ package eu.tsalliance.auth.service;
 import eu.tsalliance.auth.exception.EmailExistsException;
 import eu.tsalliance.auth.exception.NameExistsException;
 import eu.tsalliance.auth.exception.NotFoundException;
+import eu.tsalliance.auth.model.user.Registration;
 import eu.tsalliance.auth.model.user.User;
 import eu.tsalliance.auth.repository.UserRepository;
 import eu.tsalliance.auth.validator.Validator;
@@ -99,6 +100,24 @@ public class UserService {
         user.setPassword(null);
         user.setRecoveryToken(null);
         return user;
+    }
+
+    /**
+     * Register a new user
+     * @param registration Registration data
+     * @return
+     */
+    public Registration registerUser(Registration registration) throws Exception {
+        // TODO: Validate invite code
+
+        User user = new User();
+        user.setEmail(registration.getEmail());
+        user.setPassword(registration.getPassword());
+        user.setUsername(registration.getUsername());
+
+        // The validation is done inside this method
+        this.createUser(user, false);
+        return registration;
     }
 
     /**
