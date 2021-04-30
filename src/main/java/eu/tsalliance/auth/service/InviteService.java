@@ -61,6 +61,7 @@ public class InviteService {
      * @return True or False
      */
     public boolean isInviteValidById(String id) {
+        if(id == null) return false;
         Optional<Invite> invite = this.findById(id);
         return invite.isPresent() && this.isInviteValid(invite.get());
     }
@@ -118,6 +119,7 @@ public class InviteService {
      * @param id Invite's id
      */
     public void deleteInviteById(String id) {
+        if(id == null) return;
         this.inviteRepository.deleteById(id);
     }
 
