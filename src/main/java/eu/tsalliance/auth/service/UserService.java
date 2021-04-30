@@ -133,6 +133,9 @@ public class UserService {
         // The validation is done inside this method
         // Email is also handled by this method
         this.createUser(user, false);
+
+        // Check if invite is valid and can be used by others. Otherwise delete it
+        this.inviteService.isInviteValidAndDeleteById(registration.getInviteCode());
         return registration;
     }
 

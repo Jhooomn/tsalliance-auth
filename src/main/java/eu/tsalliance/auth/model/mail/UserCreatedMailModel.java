@@ -14,13 +14,6 @@ public class UserCreatedMailModel extends MailModel {
         this.password = password;
     }
 
-    public String getUsername() {
-        return username;
-    }
-    public String getPassword() {
-        return password;
-    }
-
     @Override
     public Map<String, Object> getThymeleafVariables() {
         Map<String, Object> variables = new HashMap<>();

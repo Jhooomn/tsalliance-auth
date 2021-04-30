@@ -12,10 +12,6 @@ public class WelcomeMailModel extends MailModel {
         this.username = username;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
     @Override
     public Map<String, Object> getThymeleafVariables() {
         Map<String, Object> variables = new HashMap<>();
