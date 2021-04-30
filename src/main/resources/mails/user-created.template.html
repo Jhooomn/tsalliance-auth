@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="de">
+
+<head>
+    <title>Willkommen in der Allianz!</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <style>
+        * {
+            margin: 0 auto;
+            box-sizing: border-box;
+            font-size: 1rem;
+            font-family: "Segoe UI", "Helvetica", "Arial Rounded MT Bold", sans-serif;
+            color: gray;
+        }
+
+        html, body {
+            line-height: 1.5rem;
+        }
+
+        #logo {
+            display: block;
+            text-align: center;
+            height: 64px;
+        }
+        #wrapper {
+            display: block;
+            width: 450px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 1.5rem;
+        }
+
+        ul {
+            list-style: none;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        ul li.label {
+            font-weight: bold;
+            font-size: 0.8rem;
+            opacity: 0.5;
+            margin-top: 1rem;
+        }
+
+        ul li.label:first-of-type {
+            margin-top: 0;
+        }
+
+        div.container {
+            display: block;
+            width: 100%;
+            padding: 2rem 0;
+        }
+
+        div.mail-footer {
+            font-size: 0.8rem;
+            opacity: 0.5;
+            padding: 0.5rem 0;
+        }
+
+        hr {
+            display: block;
+            background: lightslategray;
+            border: none;
+            border-radius: 8px;
+            height: 2px;
+            opacity: 0.5;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .action-button {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            background-color: lightslategray;
+            color: aliceblue;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="wrapper">
+        <div class="container">
+            <img id="logo" th:src="${mailIcon}" src="https://raw.githubusercontent.com/z3ttee/tsassets/main/logo/ts_logo.png"  alt="TSAlliance Logo" height="64px" width="64px"/>
+        </div>
+
+        <div class="container">
+            <h1>Willkommen in der Allianz!</h1>
+        </div>
+
+        <div class="container">
+            <p>Es wurde ein neues Konto für dich angelegt.</p>
+            <p>Deine Anmeldedaten lauten wie folgt:</p>
+
+            <ul>
+                <li class="label">Benutzername:</li>
+                <li th:text="${username}">{{ username }}</li>
+                <li class="label">Passwort:</li>
+                <li th:text="${password}">{{ password }}</li>
+            </ul>
+
+            <p>
+                Aus Sicherheitsgründen wird empfohlen, dein Passwort
+                direkt nach der Anmeldung zu ändern!
+            </p>
+        </div>
+
+        <div class="container">
+            <p>Dein TSAlliance-Team</p>
+        </div>
+
+        <div class="container">
+            <a class="action-button" href="{{ url }}" th:href="${appUrl}">Jetzt anmelden</a>
+        </div>
+
+        <hr>
+
+        <div class="container mail-footer">
+            &copy; <span th:text="${#dates.year(#dates.createNow())}">{{ year }}</span> TSAlliance | All rights reserved
+        </div>
+    </div>
+
+</body>
+</html>

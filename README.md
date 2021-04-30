@@ -11,6 +11,7 @@ and service discovery.
 * Java 8
 * When deploying as .war file, you need Tomcat 9+
 * MySQL as database is recommended (because of spring's nature you could use any SQL database, but at your own risk)
+* SMTP Server (Optional)
 
 ### 2. Basic Setup
 Because this service is built using Spring Boot, a configuration file 
@@ -31,4 +32,20 @@ options:
 spring.datasource.url=jdbc:mysql://<HOST>:<PORT>/<DB_NAME>?autoReconnect=true
 spring.datasource.username=<DB_USERNAME>
 spring.datasource.password=<DB_PASSWORD>
+````
+
+#### Setting up SMTP
+The application makes use of the Spring JavaMailSender to notify users about actions on their
+accounts. This package is used specifically to send welcome mails, account recoveries or 
+notifications about account changes. The following properties need to be edited to use SMTP:
+````
+spring.mail.host=<SMTP_HOST>
+spring.mail.port=<SMTP_PORT>
+spring.mail.username=<USERNAME_OF_SMTP_MAIL>
+spring.mail.password=<PASSWORD_OF_SMTP_MAIL>
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
+
+### Configure this option to change the base url of links in emails
+alliance.url=<BASE_URL>
 ````

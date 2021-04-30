@@ -1,9 +1,12 @@
 package eu.tsalliance.auth.service;
 
+import eu.tsalliance.auth.config.AllianceProperties;
 import eu.tsalliance.auth.exception.EmailExistsException;
 import eu.tsalliance.auth.exception.InviteInvalidException;
 import eu.tsalliance.auth.exception.NameExistsException;
 import eu.tsalliance.auth.exception.NotFoundException;
+import eu.tsalliance.auth.model.mail.UserCreatedMailModel;
+import eu.tsalliance.auth.model.mail.WelcomeMailModel;
 import eu.tsalliance.auth.model.user.Registration;
 import eu.tsalliance.auth.model.user.User;
 import eu.tsalliance.auth.repository.UserRepository;
@@ -30,6 +33,9 @@ public class UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private EmailService emailService;
 
     /**
      * Get user's database entry. Only public information is exposed
@@ -92,13 +98,16 @@ public class UserService {
         if(this.existsByUsernameAndIdNot(user.getUsername(), user.getId())) throw new NameExistsException();
         if(this.existsByEmailAndIdNot(user.getEmail(), user.getId())) throw new EmailExistsException();
 
+        String rawPassword = user.getPassword();
         user.setPassword(this.passwordEncoder.encode(user.getPassword()));
 
         user = this.userRepository.saveAndFlush(user);
         if(sendCredentialsMail) {
+            this.emailService.sendMail(new UserCreatedMailModel(user.getEmail(), user.getUsername(), rawPassword));
             // TODO: Fire off an event to send info mail to user containing the credentials
         } else {
             // TODO: Fire off an event to send welcome mail to user
+            this.emailService.sendMail(new WelcomeMailModel(user.getEmail(), user.getUsername()));
         }
 
         user.setPassword(null);
@@ -109,7 +118,7 @@ public class UserService {
     /**
      * Register a new user
      * @param registration Registration data
-     * @return
+     * @return Registration
      */
     public Registration registerUser(Registration registration) throws Exception {
         if(!this.inviteService.isInviteValidAndDeleteById(registration.getInviteCode())) {
@@ -122,6 +131,7 @@ public class UserService {
         user.setUsername(registration.getUsername());
 
         // The validation is done inside this method
+        // Email is also handled by this method
         this.createUser(user, false);
         return registration;
     }
