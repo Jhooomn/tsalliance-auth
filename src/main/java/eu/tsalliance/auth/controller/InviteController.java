@@ -1,6 +1,7 @@
 package eu.tsalliance.auth.controller;
 
 import eu.tsalliance.auth.model.Invite;
+import eu.tsalliance.auth.model.user.User;
 import eu.tsalliance.auth.service.InviteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -42,6 +43,12 @@ public class InviteController {
     @PostMapping
     public Invite createInvite(@RequestBody Invite invite) throws Exception {
         return this.inviteService.createInvite(invite);
+    }
+
+    @PostMapping("invite")
+    public Invite inviteMail(@RequestParam("email") String email) throws Exception {
+        // TODO: Authenticate user and get username
+        return this.inviteService.inviteEmail(new User(), email);
     }
 
     @DeleteMapping("{id}")

@@ -19,7 +19,16 @@ public class Invite {
     private int uses = 0;
     private int maxUses = Integer.MAX_VALUE;
     private Date createdAt = new Date();
+    private boolean canExpire = true;
     private Date expiresAt = new Date(System.currentTimeMillis() + (1000*60*60*24));
+
+    public boolean canExpire() {
+        return canExpire;
+    }
+
+    public void setCanExpire(boolean canExpire) {
+        this.canExpire = canExpire;
+    }
 
     public String getId() {
         return id;

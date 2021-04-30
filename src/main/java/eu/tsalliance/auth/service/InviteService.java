@@ -1,6 +1,9 @@
 package eu.tsalliance.auth.service;
 
+import eu.tsalliance.auth.config.AllianceProperties;
 import eu.tsalliance.auth.model.Invite;
+import eu.tsalliance.auth.model.mail.InviteMailModel;
+import eu.tsalliance.auth.model.user.User;
 import eu.tsalliance.auth.repository.InviteRepository;
 import eu.tsalliance.auth.validator.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +18,16 @@ import java.util.Optional;
 public class InviteService {
 
     @Autowired
+    private EmailService emailService;
+
+    @Autowired
     private InviteRepository inviteRepository;
 
     @Autowired
     private Validator validator;
+
+    @Autowired
+    private AllianceProperties allianceProperties;
 
     /**
      * Get an invite from the database by its id
@@ -47,7 +56,12 @@ public class InviteService {
         invite.setCreatedAt(new Date());
         invite.setUses(0);
 
-        //this.validator.validateDateAndThrow(invite.getExpiresAt(), "createdAt", false).check();
+        if(invite.canExpire()) {
+            this.validator.validateDateAndThrow(invite.getExpiresAt(), "createdAt", false).after(new Date()).check();
+        } else {
+            invite.setExpiresAt(null);
+        }
+
         this.validator.validateNumberAndThrow(invite.getMaxUses(), "maxUses", false).max(Integer.MAX_VALUE).min(1).check();
 
         return this.inviteRepository.saveAndFlush(invite);
@@ -79,7 +93,7 @@ public class InviteService {
         }
 
         int maxUses = invite.getMaxUses() == -1 ? Integer.MAX_VALUE : invite.getMaxUses();
-        return invite.getExpiresAt().getTime() <= System.currentTimeMillis() || invite.getUses() < maxUses;
+        return (invite.canExpire() && invite.getExpiresAt().getTime() <= System.currentTimeMillis()) || (invite.getUses() < maxUses);
     }
 
     /**
@@ -121,6 +135,29 @@ public class InviteService {
     public void deleteInviteById(String id) {
         if(id == null) return;
         this.inviteRepository.deleteById(id);
+    }
+
+    /**
+     * Invite a new potential user by sending an invite via email
+     * @param inviter Inviter's instance
+     * @param email Recipient of the email
+     * @throws Exception Exception
+     */
+    public Invite inviteEmail(User inviter, String email) throws Exception {
+
+        this.validator.validateEmailAndThrow(email, "email", true).check();
+
+        Invite oneTimeInvite = new Invite();
+        oneTimeInvite.setCanExpire(false);
+        oneTimeInvite.setMaxUses(1);
+        // TODO: oneTimeInvite.setInviter(inviter);
+
+        oneTimeInvite = this.createInvite(oneTimeInvite);
+
+        InviteMailModel mailModel = new InviteMailModel(email, inviter.getUsername(), this.allianceProperties.getUrl() + "auth/register?invite=" + oneTimeInvite.getId());
+        this.emailService.sendMail(mailModel);
+
+        return oneTimeInvite;
     }
 
 }
