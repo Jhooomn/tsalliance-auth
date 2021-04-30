@@ -60,23 +60,37 @@ public abstract class ValidationRule<T> {
      */
     public boolean check() throws ValidationException {
         if(this.needsValidation()) {
+            if(this.getSubject() == null) {
+                putFailedTest("isNull", true, false);
+                // Only throws Exception if shouldException = true
+                this.throwException();
+                return false;
+            }
             this.test();
         } else {
             if(this.isRequired()) {
                 putFailedTest("required", false, this.isRequired());
 
-                if (this.shouldThrowException()) throw new ValidationException(this);
-                else return false;
+                // Only throws Exception if shouldException = true
+                this.throwException();
+                return false;
             }
         }
 
         boolean passed = getFailedTests().size() <= 0;
 
-        if (this.shouldThrowException() && !passed) {
-            throw new ValidationException(this);
+        if (!passed) {
+            // Only throws Exception if shouldException = true
+            this.throwException();
         }
 
         return passed;
+    }
+
+    private void throwException() throws ValidationException {
+        if (this.shouldThrowException()) {
+            throw new ValidationException(this);
+        }
     }
 
     /**
