@@ -6,9 +6,6 @@ import java.util.regex.Pattern;
 
 public class EmailRule extends ValidationRule<String> {
 
-    public EmailRule(String fieldname, String subject, boolean required) {
-        super(fieldname, subject, required);
-    }
     public EmailRule(String fieldname, String subject, boolean required, boolean throwException) {
         super(fieldname, subject, required, throwException);
     }

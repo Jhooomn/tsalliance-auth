@@ -100,6 +100,10 @@ public abstract class ValidationRule<T> {
     protected boolean needsValidation() {
         boolean needsValidation;
 
+        if(this.isRequired()) {
+            return true;
+        }
+
         // Check if subject is null, return false
         if(this.getSubject() == null) {
             return false;
@@ -113,6 +117,7 @@ public abstract class ValidationRule<T> {
         }
 
         // Check if rule needs the field to be not optionally required
-        return this.isRequired() && !needsValidation;
+        //return this.isRequired() && !needsValidation;
+        return needsValidation;
     }
 }

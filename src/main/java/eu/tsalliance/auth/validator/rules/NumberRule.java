@@ -3,12 +3,12 @@ package eu.tsalliance.auth.validator.rules;
 import java.util.HashMap;
 import java.util.Map;
 
-public class NumberRule extends ValidationRule<String> {
+public class NumberRule extends ValidationRule<Integer> {
 
     private int max = -1;
     private int min = -1;
 
-    public NumberRule(String fieldname, String subject, boolean required, boolean throwException) {
+    public NumberRule(String fieldname, Integer subject, boolean required, boolean throwException) {
         super(fieldname, subject, required, throwException);
     }
 
@@ -35,7 +35,7 @@ public class NumberRule extends ValidationRule<String> {
     @Override
     protected void test() {
         try {
-            int subjectInt = Integer.parseInt(this.getSubject());
+            int subjectInt = this.getSubject();
 
             if (this.max != -1 && subjectInt > this.max) {
                 putFailedTest("max", subjectInt, this.max);

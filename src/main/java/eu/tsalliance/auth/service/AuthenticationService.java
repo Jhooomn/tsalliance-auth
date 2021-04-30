@@ -1,6 +1,6 @@
 package eu.tsalliance.auth.service;
 
-import eu.tsalliance.auth.exception.InvalidCredentials;
+import eu.tsalliance.auth.exception.InvalidCredentialsException;
 import eu.tsalliance.auth.exception.NotFoundException;
 import eu.tsalliance.auth.model.response.JwtTokenResponse;
 import eu.tsalliance.auth.model.user.Credentials;
@@ -33,7 +33,7 @@ public class AuthenticationService {
         }
 
         if(!passwordEncoder.matches(credentials.getPassword(), user.get().getPassword())) {
-            throw new InvalidCredentials();
+            throw new InvalidCredentialsException();
         }
 
         Date createdAt = new Date();

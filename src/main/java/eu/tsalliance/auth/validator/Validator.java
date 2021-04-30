@@ -1,11 +1,10 @@
 package eu.tsalliance.auth.validator;
 
-import eu.tsalliance.auth.validator.rules.EmailRule;
-import eu.tsalliance.auth.validator.rules.NumberRule;
-import eu.tsalliance.auth.validator.rules.PasswordRule;
-import eu.tsalliance.auth.validator.rules.TextRule;
+import eu.tsalliance.auth.validator.rules.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
+
+import java.util.Date;
 
 @Component
 @RequestScope
@@ -19,8 +18,12 @@ public class Validator {
         return new EmailRule(fieldname, subject, required, true);
     }
 
-    public NumberRule validateNumberAndThrow(String subject, String fieldname, boolean required) {
+    public NumberRule validateNumberAndThrow(Integer subject, String fieldname, boolean required) {
         return new NumberRule(fieldname, subject, required, true);
+    }
+
+    public DateRule validateDateAndThrow(Date subject, String fieldname, boolean required) {
+        return new DateRule(fieldname, subject, required, true);
     }
 
     public PasswordRule validatePasswordAndThrow(String subject, String fieldname, boolean required) {

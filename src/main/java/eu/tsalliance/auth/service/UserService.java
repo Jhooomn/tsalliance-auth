@@ -1,6 +1,7 @@
 package eu.tsalliance.auth.service;
 
 import eu.tsalliance.auth.exception.EmailExistsException;
+import eu.tsalliance.auth.exception.InviteInvalidException;
 import eu.tsalliance.auth.exception.NameExistsException;
 import eu.tsalliance.auth.exception.NotFoundException;
 import eu.tsalliance.auth.model.user.Registration;
@@ -20,6 +21,9 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private InviteService inviteService;
 
     @Autowired
     private Validator validator;
@@ -108,7 +112,9 @@ public class UserService {
      * @return
      */
     public Registration registerUser(Registration registration) throws Exception {
-        // TODO: Validate invite code
+        if(!this.inviteService.isInviteValidAndDeleteById(registration.getInviteCode())) {
+            throw new InviteInvalidException();
+        }
 
         User user = new User();
         user.setEmail(registration.getEmail());
