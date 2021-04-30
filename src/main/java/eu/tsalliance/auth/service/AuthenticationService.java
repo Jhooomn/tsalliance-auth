@@ -41,6 +41,7 @@ public class AuthenticationService {
         String token = Jwts.builder()
                 .setSubject(user.get().getId())
                 .claim("id", user.get().getId())
+                .claim("etag", user.get().getEtag())
                 .setIssuedAt(createdAt)
                 .signWith(SignatureAlgorithm.HS512, CryptUtil.getJwtSecretKey())
                 .compact();
