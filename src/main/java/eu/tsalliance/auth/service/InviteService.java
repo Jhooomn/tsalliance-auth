@@ -21,6 +21,9 @@ public class InviteService {
     private EmailService emailService;
 
     @Autowired
+    private ApplicationService applicationService;
+
+    @Autowired
     private InviteRepository inviteRepository;
 
     @Autowired
@@ -60,6 +63,11 @@ public class InviteService {
             this.validator.validateDateAndThrow(invite.getExpiresAt(), "createdAt", false).after(new Date()).check();
         } else {
             invite.setExpiresAt(null);
+        }
+
+        // Set access to all apps if not specified
+        if(invite.getAccessableApps() == null) {
+            invite.setAccessableApps(this.applicationService.findAllIdOnly());
         }
 
         this.validator.validateNumberAndThrow(invite.getMaxUses(), "maxUses", false).max(Integer.MAX_VALUE).min(1).check();

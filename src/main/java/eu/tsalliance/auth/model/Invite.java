@@ -4,7 +4,9 @@ import eu.tsalliance.auth.model.user.User;
 import eu.tsalliance.auth.utils.RandomUtil;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "ts_invites")
@@ -21,6 +23,17 @@ public class Invite {
     private Date createdAt = new Date();
     private boolean canExpire = true;
     private Date expiresAt = new Date(System.currentTimeMillis() + (1000*60*60*24));
+
+    @ManyToMany
+    private List<Application> accessableApps;
+
+    public List<Application> getAccessableApps() {
+        return accessableApps;
+    }
+
+    public void setAccessableApps(List<Application> accessableApps) {
+        this.accessableApps = accessableApps;
+    }
 
     public boolean canExpire() {
         return canExpire;

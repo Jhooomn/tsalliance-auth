@@ -21,20 +21,6 @@ public class InviteController {
         return this.inviteService.findAll(pageable);
     }
 
-    /*@GetMapping("{id}")
-    public ResponseEntity<Invite> findInviteInfo(@PathVariable("id") String id) {
-        Optional<Invite> invite = this.inviteService.findById(id);
-
-        if(invite.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        invite.get().setInviter(null);
-        invite.get().setCreatedAt(null);
-
-        return ResponseEntity.of(invite);
-    }*/
-
     @GetMapping("{id}")
     public ResponseEntity<Invite> findInvite(@PathVariable("id") String id) {
         return ResponseEntity.of(this.inviteService.findById(id));

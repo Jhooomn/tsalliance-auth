@@ -5,6 +5,7 @@ import eu.tsalliance.auth.exception.EmailExistsException;
 import eu.tsalliance.auth.exception.InviteInvalidException;
 import eu.tsalliance.auth.exception.NameExistsException;
 import eu.tsalliance.auth.exception.NotFoundException;
+import eu.tsalliance.auth.model.Invite;
 import eu.tsalliance.auth.model.mail.UserCreatedMailModel;
 import eu.tsalliance.auth.model.mail.WelcomeMailModel;
 import eu.tsalliance.auth.model.user.Registration;
@@ -121,7 +122,8 @@ public class UserService {
      * @return Registration
      */
     public Registration registerUser(Registration registration) throws Exception {
-        if(!this.inviteService.isInviteValidAndDeleteById(registration.getInviteCode())) {
+        Optional<Invite> invite = this.inviteService.findById(registration.getInviteCode());
+        if(invite.isEmpty() || !this.inviteService.isInviteValidAndDelete(invite.get())){
             throw new InviteInvalidException();
         }
 
@@ -129,6 +131,7 @@ public class UserService {
         user.setEmail(registration.getEmail());
         user.setPassword(registration.getPassword());
         user.setUsername(registration.getUsername());
+        user.setAccessableApps(invite.get().getAccessableApps());
 
         // The validation is done inside this method
         // Email is also handled by this method
