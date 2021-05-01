@@ -1,4 +1,4 @@
-package eu.tsalliance.auth.exception;
+package eu.tsalliance.auth.exception.auth;
 
 import org.springframework.security.core.AuthenticationException;
 

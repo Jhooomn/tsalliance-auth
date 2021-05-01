@@ -1,23 +1,21 @@
 package eu.tsalliance.auth.service;
 
-import eu.tsalliance.auth.exception.InvalidCredentialsException;
-import eu.tsalliance.auth.exception.InvalidSessionException;
+import eu.tsalliance.auth.exception.auth.AccountNotFoundException;
+import eu.tsalliance.auth.exception.auth.InvalidCredentialsException;
+import eu.tsalliance.auth.exception.auth.InvalidSessionException;
 import eu.tsalliance.auth.exception.NotFoundException;
+import eu.tsalliance.auth.exception.auth.SessionExpiredException;
 import eu.tsalliance.auth.model.response.JwtTokenResponse;
 import eu.tsalliance.auth.model.user.Credentials;
 import eu.tsalliance.auth.model.user.User;
 import eu.tsalliance.auth.repository.UserRepository;
 import eu.tsalliance.auth.utils.CryptUtil;
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.security.Key;
 import java.util.Date;
-import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -29,8 +27,14 @@ public class AuthenticationService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    /**
+     * Sign in user using their credentials
+     * @param credentials Credentials object
+     * @return JwtTokenResponse
+     * @throws Exception Exception
+     */
     public JwtTokenResponse signin(Credentials credentials) throws Exception {
-        Optional<User> user = this.userRepository.findUserByEmailOrUsername(credentials.getEmail(), credentials.getUsername());
+        Optional<User> user = this.userRepository.findUserByEmailOrUsername(credentials.getIdentifier(), credentials.getIdentifier());
 
         if(user.isEmpty()) {
             throw new NotFoundException();
@@ -52,6 +56,11 @@ public class AuthenticationService {
         return new JwtTokenResponse(user.get().getId(), token, null, createdAt);
     }
 
+    /**
+     * Find user by parsing jwt and search for user with id
+     * @param jwt Jwt token
+     * @return Optional of type User
+     */
     public Optional<User> findUserDetailsByJwt(String jwt) {
         if(jwt == null) return Optional.empty();
 
@@ -61,9 +70,16 @@ public class AuthenticationService {
             String userId = String.valueOf(claims.get("id"));
             String etag = String.valueOf(claims.get("etag"));
 
-            // TODO: Fetch user and check if etag matches
+            Optional<User> user = this.userRepository.findById(userId);
+            if(user.isEmpty()) {
+                throw new AccountNotFoundException();
+            }
 
-            return this.userRepository.findUserByIdAndEtag(userId, etag);
+            if(!user.get().getEtag().equals(etag)) {
+                throw new SessionExpiredException();
+            }
+
+            return user;
         } catch (JwtException exception) {
             throw new InvalidSessionException();
         }
