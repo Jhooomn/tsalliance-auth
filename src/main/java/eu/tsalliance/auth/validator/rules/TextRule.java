@@ -55,11 +55,11 @@ public class TextRule extends ValidationRule<String, TextRule> {
     @Override
     protected void test() {
             if (this.maxLen != -1 && this.getSubject().length() > this.maxLen) {
-                putFailedTest("maxLen", this.getSubject().length(), this.maxLen);
+                putFailedTest("maxlen", this.getSubject().length(), this.maxLen);
             }
 
             if (this.minLen != -1 && this.getSubject().length() < this.minLen) {
-                putFailedTest("minLen", this.getSubject().length(), this.minLen);
+                putFailedTest("minlen", this.getSubject().length(), this.minLen);
             }
 
             if (this.alpha && !this.getSubject().matches("^[a-zA-Z]*$")) {

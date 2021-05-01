@@ -14,6 +14,10 @@ public class Validator {
         return new TextRule(fieldname, subject, required, true);
     }
 
+    public UrlRule validateUrlAndThrow(String subject, String fieldname, boolean required) {
+        return new UrlRule(fieldname, subject, required, true);
+    }
+
     public EmailRule validateEmailAndThrow(String subject, String fieldname, boolean required) {
         return new EmailRule(fieldname, subject, required, true);
     }

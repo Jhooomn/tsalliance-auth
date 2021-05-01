@@ -1,6 +1,5 @@
 package eu.tsalliance.auth.model.user;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import eu.tsalliance.auth.model.Application;
 import eu.tsalliance.auth.model.links.LinkedAccount;
 import eu.tsalliance.auth.utils.RandomUtil;
@@ -22,12 +21,14 @@ public class User {
     private String username;
 
     @Column(nullable = false)
-    private String etag = RandomUtil.generateRandomHash(16);
+    private String etag = RandomUtil.generateRandomString(16);
 
     private Date createdAt = new Date();
 
     private String password;
     private String email;
+
+    private int discriminator = RandomUtil.generateRandomNumber(4);
 
     @ManyToMany
     private List<Application> accessableApps = new ArrayList<>();
@@ -40,6 +41,14 @@ public class User {
 
     @OneToOne
     private RecoveryToken recoveryToken;
+
+    public int getDiscriminator() {
+        return discriminator;
+    }
+
+    public void setDiscriminator(int discriminator) {
+        this.discriminator = discriminator;
+    }
 
     public RecoveryToken getRecoveryToken() {
         return recoveryToken;

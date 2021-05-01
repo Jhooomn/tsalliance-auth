@@ -4,7 +4,6 @@ import eu.tsalliance.auth.model.user.User;
 import eu.tsalliance.auth.utils.RandomUtil;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -13,7 +12,7 @@ import java.util.List;
 public class Invite {
 
     @Id
-    private String id = RandomUtil.generateRandomHash(12);
+    private String id = RandomUtil.generateRandomString(12);
 
     @ManyToOne
     private User inviter;
