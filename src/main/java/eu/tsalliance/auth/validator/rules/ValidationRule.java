@@ -2,6 +2,7 @@ package eu.tsalliance.auth.validator.rules;
 
 import eu.tsalliance.auth.exception.ValidationException;
 
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -107,7 +108,10 @@ public abstract class ValidationRule<T, D> {
         } else {
             if(this.getSubject() instanceof String) {
                 String subj = (String) this.getSubject();
-                needsValidation = !(subj.isBlank() || !subj.isEmpty());
+                needsValidation = !(subj.isBlank() || subj.isEmpty());
+            } else if(this.getSubject() instanceof URL) {
+                String subj = this.getSubject().toString();
+                needsValidation = !(subj.isBlank() || subj.isEmpty());
             } else {
                 needsValidation = true;
             }
