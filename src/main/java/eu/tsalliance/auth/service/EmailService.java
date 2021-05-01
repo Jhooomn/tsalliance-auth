@@ -29,21 +29,28 @@ public class EmailService {
     @Value("${spring.mail.username}")
     private Optional<String> MAIL_SENDER;
 
-    public void sendMail(MailModel mailModel) throws MessagingException {
-        Context context = new Context();
-        context.setVariable("appUrl", allianceProperties.getUrl());
-        context.setVariable("mailIcon", mailModel.getMailIcon());
-        context.setVariables(mailModel.getThymeleafVariables());
+    public void sendMail(MailModel mailModel) {
+        new Thread(() -> {
+            try {
+                Context context = new Context();
+                context.setVariable("appUrl", allianceProperties.getUrl());
+                context.setVariable("mailIcon", mailModel.getMailIcon());
+                context.setVariables(mailModel.getThymeleafVariables());
 
-        MimeMessage mimeMailMessage = this.mailSender.createMimeMessage();
-        mimeMailMessage.setSubject(mailModel.getMailSubject());
-        mimeMailMessage.setFrom(MAIL_SENDER.orElse(""));
-        mimeMailMessage.setRecipients(Message.RecipientType.TO, mailModel.getRecipient());
+                MimeMessage mimeMailMessage = this.mailSender.createMimeMessage();
+                mimeMailMessage.setSubject(mailModel.getMailSubject());
+                mimeMailMessage.setFrom(MAIL_SENDER.orElse(""));
+                mimeMailMessage.setRecipients(Message.RecipientType.TO, mailModel.getRecipient());
 
-        String htmlContent = this.templateEngine.process(mailModel.getHtmlTemplateFile(), context);
-        mimeMailMessage.setContent(htmlContent, "text/html");
+                String htmlContent = this.templateEngine.process(mailModel.getHtmlTemplateFile(), context);
+                mimeMailMessage.setContent(htmlContent, "text/html");
 
-        this.mailSender.send(mimeMailMessage);
+                this.mailSender.send(mimeMailMessage);
+            } catch (MessagingException e) {
+                e.printStackTrace();
+            }
+        }).start();
+
     }
 
 }
