@@ -13,15 +13,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-@EnableGlobalMethodSecurity(
-        prePostEnabled = true,
-
-        // Enables @Secure annotation on requestmappings
-        securedEnabled = true,
-
-        // Allows the use of @RoleAllowed annotation
-        jsr250Enabled = true
-)
 public class AppSecurity extends WebSecurityConfigurerAdapter {
 
     @Bean

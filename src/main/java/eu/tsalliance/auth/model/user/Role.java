@@ -15,6 +15,8 @@ public class Role {
     @Column(unique = true, length = 32, nullable = false)
     private String roleName;
 
+    private int hierarchy = 0;
+
     @ElementCollection
     @JoinTable(name = "ts_roles_permissions")
     private List<String> permissions = new ArrayList<>();
@@ -41,5 +43,13 @@ public class Role {
 
     public void setPermissions(List<String> permissions) {
         this.permissions = permissions;
+    }
+
+    public int getHierarchy() {
+        return hierarchy;
+    }
+
+    public void setHierarchy(int hierarchy) {
+        this.hierarchy = hierarchy;
     }
 }

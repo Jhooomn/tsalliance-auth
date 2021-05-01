@@ -17,7 +17,7 @@ public class UserController {
     private UserService userService;
 
     @RequestMapping(path = "{id}", method = RequestMethod.GET)
-    @PreAuthorize("hasAuthority('alliance.users.read')")
+    @PreAuthorize("hasPermission('alliance.users.read')")
     public ResponseEntity<User> getUser(@PathVariable("id") String id) {
         return ResponseEntity.of(this.userService.findUserById(id));
     }
@@ -29,13 +29,13 @@ public class UserController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAuthority('alliance.users.write')")
+    @PreAuthorize("hasAuthority('alliance.users.write') and canModifyUser(#user.role)")
     public User createUser(@RequestBody User user) throws Exception {
         return this.userService.createUser(user, true);
     }
 
     @PutMapping("{id}")
-    @PreAuthorize("hasAuthority('alliance.users.write')")
+    @PreAuthorize("hasAuthority('alliance.users.write') and canModifyUser(#user.role)")
     public User updateUser(@PathVariable("id") String id, @RequestBody User user) throws Exception {
         return this.userService.updateUser(id, user);
     }
