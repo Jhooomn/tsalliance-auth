@@ -1,9 +1,9 @@
 package eu.tsalliance.auth.service.account;
 
-import eu.tsalliance.auth.exception.InviteInvalidException;
+import eu.tsalliance.auth.exception.invalid.InviteInvalidException;
 import eu.tsalliance.auth.exception.NotFoundException;
 import eu.tsalliance.auth.model.Invite;
-import eu.tsalliance.auth.model.user.Registration;
+import eu.tsalliance.auth.model.forms.Registration;
 import eu.tsalliance.auth.model.user.User;
 import eu.tsalliance.auth.repository.UserRepository;
 import eu.tsalliance.auth.service.EmailService;

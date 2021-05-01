@@ -1,4 +1,4 @@
-package eu.tsalliance.auth.exception.auth;
+package eu.tsalliance.auth.exception.account;
 
 import eu.tsalliance.auth.exception.ApiException;
 import org.springframework.http.HttpStatus;

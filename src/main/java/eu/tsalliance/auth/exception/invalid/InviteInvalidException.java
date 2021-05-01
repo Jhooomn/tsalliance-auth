@@ -1,5 +1,6 @@
-package eu.tsalliance.auth.exception;
+package eu.tsalliance.auth.exception.invalid;
 
+import eu.tsalliance.auth.exception.ApiException;
 import org.springframework.http.HttpStatus;
 
 public class InviteInvalidException extends ApiException {

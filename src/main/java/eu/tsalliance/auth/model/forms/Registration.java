@@ -1,4 +1,4 @@
-package eu.tsalliance.auth.model.user;
+package eu.tsalliance.auth.model.forms;
 
 public class Registration {
 
