@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DateRule extends ValidationRule<Date> {
+public class DateRule extends ValidationRule<Date, DateRule> {
 
     private Date before;
     private Date after;

@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-public class PasswordRule extends ValidationRule<String> {
+public class PasswordRule extends ValidationRule<String, PasswordRule> {
 
     private final int MIN_LEN = 6;
     private final int MAX_LEN = 255;

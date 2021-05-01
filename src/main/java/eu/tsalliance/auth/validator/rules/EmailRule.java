@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-public class EmailRule extends ValidationRule<String> {
+public class EmailRule extends ValidationRule<String, EmailRule> {
 
     public EmailRule(String fieldname, String subject, boolean required, boolean throwException) {
         super(fieldname, subject, required, throwException);

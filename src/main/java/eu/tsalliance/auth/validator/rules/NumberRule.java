@@ -3,7 +3,7 @@ package eu.tsalliance.auth.validator.rules;
 import java.util.HashMap;
 import java.util.Map;
 
-public class NumberRule extends ValidationRule<Integer> {
+public class NumberRule extends ValidationRule<Integer, NumberRule> {
 
     private int max = -1;
     private int min = -1;

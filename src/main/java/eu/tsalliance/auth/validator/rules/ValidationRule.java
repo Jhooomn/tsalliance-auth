@@ -5,20 +5,15 @@ import eu.tsalliance.auth.exception.ValidationException;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class ValidationRule<T> {
+public abstract class ValidationRule<T, D> {
 
     private final T subject;
     private final String fieldname;
     private final boolean required;
-    private boolean throwException = false;
+    private UniqueValidatorFunction uniqueValidatorFunction;
+    private final boolean throwException;
 
     private final Map<String, Object> failedTests = new HashMap<>();
-
-    public ValidationRule(String fieldname, T subject, boolean required) {
-        this.fieldname = fieldname;
-        this.subject = subject;
-        this.required = required;
-    }
 
     public ValidationRule(String fieldname, T subject, boolean required, boolean throwException) {
         this.fieldname = fieldname;
@@ -36,11 +31,9 @@ public abstract class ValidationRule<T> {
     protected boolean isRequired() {
         return required;
     }
-
     protected T getSubject() {
         return subject;
     }
-
     protected boolean shouldThrowException() {
         return throwException;
     }
@@ -48,7 +41,6 @@ public abstract class ValidationRule<T> {
     public String getFieldname() {
         return fieldname;
     }
-
     public Map<String, Object> getFailedTests() {
         return failedTests;
     }
@@ -60,12 +52,7 @@ public abstract class ValidationRule<T> {
      */
     public boolean check() throws ValidationException {
         if(this.needsValidation()) {
-            if(this.getSubject() == null) {
-                putFailedTest("isNull", true, false);
-                // Only throws Exception if shouldException = true
-                this.throwException();
-                return false;
-            }
+            this.testInternal();
             this.test();
         } else {
             if(this.isRequired()) {
@@ -87,11 +74,7 @@ public abstract class ValidationRule<T> {
         return passed;
     }
 
-    private void throwException() throws ValidationException {
-        if (this.shouldThrowException()) {
-            throw new ValidationException(this);
-        }
-    }
+
 
     /**
      * Register a failed test in the registry
@@ -130,8 +113,48 @@ public abstract class ValidationRule<T> {
             }
         }
 
-        // Check if rule needs the field to be not optionally required
-        //return this.isRequired() && !needsValidation;
         return needsValidation;
+    }
+
+    /**
+     * Check if a value is unique
+     * @param validatorFunction Function for validation
+     * @return Rule instance
+     */
+    public D unique(UniqueValidatorFunction validatorFunction) {
+        this.uniqueValidatorFunction = validatorFunction;
+        return (D) this;
+    }
+
+    /**
+     * Throw exception if rule requires exceptions to be thrown
+     * @throws ValidationException Exception
+     */
+    private void throwException() throws ValidationException {
+        if (this.shouldThrowException()) {
+            throw new ValidationException(this);
+        }
+    }
+
+    /**
+     * Perform internal tests like testing for null or unique
+     * @throws ValidationException Exception
+     */
+    private void testInternal() throws ValidationException {
+        if(this.getSubject() == null) {
+            putFailedTest("isNull", true, false);
+            // Only throws Exception if shouldException = true
+            this.throwException();
+            return;
+        }
+
+        if(this.uniqueValidatorFunction != null && !this.uniqueValidatorFunction.validate()) {
+            putFailedTest("unique", false, true);
+        }
+    }
+
+    @FunctionalInterface
+    public interface UniqueValidatorFunction {
+        boolean validate();
     }
 }

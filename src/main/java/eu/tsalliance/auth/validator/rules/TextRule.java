@@ -3,7 +3,7 @@ package eu.tsalliance.auth.validator.rules;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TextRule extends ValidationRule<String> {
+public class TextRule extends ValidationRule<String, TextRule> {
 
     private int maxLen = -1;
     private int minLen = -1;

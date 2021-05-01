@@ -1,6 +1,5 @@
 package eu.tsalliance.auth.service;
 
-import eu.tsalliance.auth.config.AllianceProperties;
 import eu.tsalliance.auth.exception.EmailExistsException;
 import eu.tsalliance.auth.exception.InviteInvalidException;
 import eu.tsalliance.auth.exception.NameExistsException;
@@ -11,6 +10,7 @@ import eu.tsalliance.auth.model.mail.WelcomeMailModel;
 import eu.tsalliance.auth.model.user.Registration;
 import eu.tsalliance.auth.model.user.User;
 import eu.tsalliance.auth.repository.UserRepository;
+import eu.tsalliance.auth.utils.RandomUtil;
 import eu.tsalliance.auth.validator.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
@@ -50,6 +51,7 @@ public class UserService {
             value.setAccessableApps(null);
             value.setEmail(null);
             value.setRecoveryToken(null);
+            value.setLinkedAccounts(null);
         });
 
         return user;
@@ -91,13 +93,13 @@ public class UserService {
      * @throws Exception Exception
      */
     public User createUser(User user, boolean sendCredentialsMail) throws Exception {
+        user.setLinkedAccounts(new ArrayList<>());
+        user.setDiscriminator(RandomUtil.generateRandomNumber(4));
 
-        validator.validateTextAndThrow(user.getUsername(), "username", true).minLen(3).maxLen(32).alphaNum().check();
-        validator.validateEmailAndThrow(user.getEmail(), "email", true).check();
+        User finalUser = user;
+        validator.validateTextAndThrow(user.getUsername(), "username", true).minLen(3).maxLen(32).alphaNum().unique(() -> !this.existsByUsernameAndIdNot(finalUser.getUsername(), finalUser.getId())).check();
+        validator.validateEmailAndThrow(user.getEmail(), "email", true).unique(() -> !this.existsByEmailAndIdNot(finalUser.getEmail(), finalUser.getId())).check();
         validator.validatePasswordAndThrow(user.getPassword(), "password", true).check();
-
-        if(this.existsByUsernameAndIdNot(user.getUsername(), user.getId())) throw new NameExistsException();
-        if(this.existsByEmailAndIdNot(user.getEmail(), user.getId())) throw new EmailExistsException();
 
         String rawPassword = user.getPassword();
         user.setPassword(this.passwordEncoder.encode(user.getPassword()));
