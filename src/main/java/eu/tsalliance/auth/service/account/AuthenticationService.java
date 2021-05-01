@@ -1,13 +1,15 @@
 package eu.tsalliance.auth.service.account;
 
 import eu.tsalliance.auth.exception.ValidationException;
-import eu.tsalliance.auth.exception.auth.AccountNotFoundException;
-import eu.tsalliance.auth.exception.auth.InvalidCredentialsException;
-import eu.tsalliance.auth.exception.auth.InvalidSessionException;
+import eu.tsalliance.auth.exception.account.AccountNotFoundException;
+import eu.tsalliance.auth.exception.account.InvalidCredentialsException;
+import eu.tsalliance.auth.exception.account.InvalidSessionException;
 import eu.tsalliance.auth.exception.NotFoundException;
-import eu.tsalliance.auth.exception.auth.SessionExpiredException;
+import eu.tsalliance.auth.exception.account.SessionExpiredException;
+import eu.tsalliance.auth.exception.invalid.RecoveryInvalidException;
+import eu.tsalliance.auth.model.forms.PasswordRecovery;
 import eu.tsalliance.auth.model.response.JwtTokenResponse;
-import eu.tsalliance.auth.model.user.Credentials;
+import eu.tsalliance.auth.model.forms.Credentials;
 import eu.tsalliance.auth.model.user.RecoveryToken;
 import eu.tsalliance.auth.model.user.User;
 import eu.tsalliance.auth.service.EmailService;
@@ -108,7 +110,7 @@ public class AuthenticationService {
      */
     public void requestAccountRecovery(Credentials credentials) throws ValidationException {
 
-        this.validator.text(credentials.getIdentifier(), "identifier", true).minLen(3).check();
+        this.validator.text(credentials.getIdentifier(), "identifier", true).check();
         this.validator.throwErrors();
 
         Optional<User> user = this.userService.findUserByEmailOrUsername(credentials.getIdentifier(), credentials.getIdentifier());
@@ -121,6 +123,33 @@ public class AuthenticationService {
             this.emailService.sendRecoveryMail(user.get().getEmail(), user.get().getUsername(), token.getId());
         }
 
+    }
+
+    /**
+     * Request account recovery for email. Only identifier field of Credentials is required.
+     * @param passwordRecovery Recovery data
+     */
+    public void recoverAccount(PasswordRecovery passwordRecovery) throws Exception {
+
+        this.validator.text(passwordRecovery.getIdentifier(), "identifier", true).check();
+        this.validator.password(passwordRecovery.getNewPassword(), "newPassword", true).check();
+        this.validator.throwErrors();
+
+        Optional<User> user = this.userService.findUserByEmailOrUsername(passwordRecovery.getIdentifier(), passwordRecovery.getIdentifier());
+
+        if(user.isPresent()) {
+            Optional<RecoveryToken> token = this.recoveryService.findTokenById(passwordRecovery.getRecoveryToken());
+
+            if(token.isEmpty() || !token.get().getUser().getId().equals(user.get().getId())) {
+                throw new RecoveryInvalidException();
+            }
+
+            user.get().setPassword(this.passwordEncoder.encode(passwordRecovery.getNewPassword()));
+            this.userService.saveUser(user.get());
+            this.recoveryService.deleteRecoveryById(passwordRecovery.getRecoveryToken());
+        } else {
+            throw new AccountNotFoundException();
+        }
     }
 
 }

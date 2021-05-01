@@ -6,6 +6,8 @@ import eu.tsalliance.auth.repository.RecoveryRespository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class RecoveryService {
 
@@ -22,6 +24,15 @@ public class RecoveryService {
         token.setUser(user);
 
         return this.recoveryRespository.saveAndFlush(token);
+    }
+
+    /**
+     * Find recovery token by id
+     * @param id Token's id
+     * @return Recovery Token
+     */
+    public Optional<RecoveryToken> findTokenById(String id) {
+        return this.recoveryRespository.findById(id);
     }
 
     /**

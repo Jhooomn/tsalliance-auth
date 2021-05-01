@@ -1,9 +1,10 @@
 package eu.tsalliance.auth.controller;
 
 import eu.tsalliance.auth.exception.ValidationException;
+import eu.tsalliance.auth.model.forms.PasswordRecovery;
 import eu.tsalliance.auth.model.response.JwtTokenResponse;
-import eu.tsalliance.auth.model.user.Credentials;
-import eu.tsalliance.auth.model.user.Registration;
+import eu.tsalliance.auth.model.forms.Credentials;
+import eu.tsalliance.auth.model.forms.Registration;
 import eu.tsalliance.auth.service.account.AuthenticationService;
 import eu.tsalliance.auth.service.account.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,12 @@ public class AuthenticationController {
     @RequestMapping(value = "recover", method = RequestMethod.POST)
     public ResponseEntity<Object> requestRecovery(@RequestBody Credentials credentials) throws ValidationException {
         this.authenticationService.requestAccountRecovery(credentials);
+        return ResponseEntity.ok().build();
+    }
+
+    @RequestMapping(value = "recover", method = RequestMethod.PUT)
+    public ResponseEntity<Object> requestRecovery(@RequestBody PasswordRecovery passwordRecovery) throws Exception {
+        this.authenticationService.recoverAccount(passwordRecovery);
         return ResponseEntity.ok().build();
     }
 
