@@ -1,18 +1,19 @@
 package eu.tsalliance.auth.model.user;
 
 import eu.tsalliance.auth.model.Application;
+import eu.tsalliance.auth.model.image.Image;
 import eu.tsalliance.auth.model.links.LinkedAccount;
 import eu.tsalliance.auth.utils.RandomUtil;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "ts_users")
-public class User {
+public class User implements UserDetails {
 
     @Id
     private String id = UUID.randomUUID().toString();
@@ -28,6 +29,9 @@ public class User {
     private String password;
     private String email;
 
+    @OneToOne
+    private Image avatar;
+
     private int discriminator = RandomUtil.generateRandomNumber(4);
 
     @ManyToMany
@@ -41,6 +45,14 @@ public class User {
 
     @OneToOne
     private RecoveryToken recoveryToken;
+
+    public Image getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(Image avatar) {
+        this.avatar = avatar;
+    }
 
     public int getDiscriminator() {
         return discriminator;
@@ -60,6 +72,26 @@ public class User {
 
     public String getUsername() {
         return username;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 
     public void setUsername(String username) {
@@ -96,6 +128,15 @@ public class User {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        // TODO: Role permissions as authority
+
+        List<GrantedAuthority> permissions = new ArrayList<>();
+        permissions.add(new SimpleGrantedAuthority("permission"));
+        return permissions;
     }
 
     public String getPassword() {

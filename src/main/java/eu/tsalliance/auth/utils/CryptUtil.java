@@ -1,5 +1,10 @@
 package eu.tsalliance.auth.utils;
 
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.io.Encoders;
+import io.jsonwebtoken.security.Keys;
+
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import java.io.*;
@@ -12,39 +17,30 @@ public class CryptUtil {
     protected static File secretsDir = new File(System.getProperty("user.dir") + File.separator + "secret");
     protected static File jwtSecretFile = new File(secretsDir.getAbsolutePath(), "jwt.secret");
 
-    protected static String jwtSecret;
+    protected static SecretKey jwtSecretKey;
 
-    public static String generateAESSecret(){
-        try {
-            KeyGenerator generator = KeyGenerator.getInstance("AES");
-            generator.init(256);
-
-            SecretKey secretKey = generator.generateKey();
-            return Base64.getEncoder().encodeToString(secretKey.getEncoded());
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            return "";
-        }
-    }
-
-    public static String getJwtSecretKey() {
+    public static SecretKey getJwtSecretKey() {
         try {
             if (!jwtSecretFile.exists()) {
                 Files.createDirectories(secretsDir.toPath());
                 Files.createFile(jwtSecretFile.toPath());
 
-                if(!writeSecretToFile(generateAESSecret(), jwtSecretFile)) {
+                SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+                String base64Key = Encoders.BASE64.encode(key.getEncoded());
+
+                if(!writeSecretToFile(base64Key, jwtSecretFile)) {
                     throw new Exception("Could not write jwt secret. This may cause sessions being invalidated on each restart of the service.");
                 }
             }
 
-            if(jwtSecret == null) {
-                jwtSecret = readSecretFromFile(jwtSecretFile);
+            if(jwtSecretKey == null) {
+                jwtSecretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(readSecretFromFile(jwtSecretFile)));
             }
 
-            return jwtSecret;
+            return jwtSecretKey;
         } catch (Exception ex) {
-            return "";
+            ex.printStackTrace();
+            return null;
         }
     }
 
