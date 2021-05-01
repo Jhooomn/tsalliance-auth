@@ -160,13 +160,10 @@ public class InviteService {
         Invite oneTimeInvite = new Invite();
         oneTimeInvite.setCanExpire(false);
         oneTimeInvite.setMaxUses(1);
-        // TODO: oneTimeInvite.setInviter(inviter);
+        oneTimeInvite.setInviter(inviter);
 
         oneTimeInvite = this.createInvite(oneTimeInvite);
-
-        InviteMailModel mailModel = new InviteMailModel(email, inviter.getUsername(), this.allianceProperties.getBaseUrl() + "auth/register?invite=" + oneTimeInvite.getId());
-        this.emailService.sendMail(mailModel);
-
+        this.emailService.sendInviteMail(email, inviter.getUsername(), oneTimeInvite.getId());
         return oneTimeInvite;
     }
 

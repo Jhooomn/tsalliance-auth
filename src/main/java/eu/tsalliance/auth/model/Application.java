@@ -1,8 +1,9 @@
 package eu.tsalliance.auth.model;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import eu.tsalliance.auth.model.image.Image;
+import eu.tsalliance.auth.utils.RandomUtil;
+
+import javax.persistence.*;
 import java.net.URL;
 import java.util.UUID;
 
@@ -12,13 +13,41 @@ public class Application {
 
     @Id
     private String id = UUID.randomUUID().toString();
-    private String applicationName;
-    private String applicationCode;
-    private URL applicationUrl;
 
-    private String applicationClientId;
-    private String applicationClientSecret;
-    private String applicationAccessToken;
+    @Column(unique = true, nullable = false)
+    private String name;
+    private String description;
+
+    @Column(unique = true, nullable = false)
+    private URL url;
+
+    @Column(unique = true, nullable = false)
+    private int code = RandomUtil.generateRandomNumber(4);
+
+    @Column(unique = true, nullable = false)
+    private String clientId = RandomUtil.generateRandomString(64);
+
+    @Column(unique = true, nullable = false)
+    private String clientSecret = RandomUtil.generateRandomString(64);
+
+    @Column(unique = true, nullable = false)
+    private String accessToken = RandomUtil.generateRandomString(64);
+
+    @OneToOne
+    private Image logo;
+
+    public Application() { }
+    public Application(String id) {
+        this.id = id;
+    }
+
+    public Image getLogo() {
+        return logo;
+    }
+
+    public void setLogo(Image logo) {
+        this.logo = logo;
+    }
 
     public String getId() {
         return id;
@@ -28,51 +57,59 @@ public class Application {
         this.id = id;
     }
 
-    public String getApplicationName() {
-        return applicationName;
+    public String getName() {
+        return name;
     }
 
-    public void setApplicationName(String applicationName) {
-        this.applicationName = applicationName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getApplicationCode() {
-        return applicationCode;
+    public String getDescription() {
+        return description;
     }
 
-    public void setApplicationCode(String applicationCode) {
-        this.applicationCode = applicationCode;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public URL getApplicationUrl() {
-        return applicationUrl;
+    public URL getUrl() {
+        return url;
     }
 
-    public void setApplicationUrl(URL applicationUrl) {
-        this.applicationUrl = applicationUrl;
+    public void setUrl(URL url) {
+        this.url = url;
     }
 
-    public String getApplicationClientId() {
-        return applicationClientId;
+    public int getCode() {
+        return code;
     }
 
-    public void setApplicationClientId(String applicationClientId) {
-        this.applicationClientId = applicationClientId;
+    public void setCode(int code) {
+        this.code = code;
     }
 
-    public String getApplicationClientSecret() {
-        return applicationClientSecret;
+    public String getClientId() {
+        return clientId;
     }
 
-    public void setApplicationClientSecret(String applicationClientSecret) {
-        this.applicationClientSecret = applicationClientSecret;
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
     }
 
-    public String getApplicationAccessToken() {
-        return applicationAccessToken;
+    public String getClientSecret() {
+        return clientSecret;
     }
 
-    public void setApplicationAccessToken(String applicationAccessToken) {
-        this.applicationAccessToken = applicationAccessToken;
+    public void setClientSecret(String clientSecret) {
+        this.clientSecret = clientSecret;
+    }
+
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
     }
 }

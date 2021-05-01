@@ -1,19 +1,14 @@
 package eu.tsalliance.auth.controller;
 
+import eu.tsalliance.auth.exception.ValidationException;
 import eu.tsalliance.auth.model.response.JwtTokenResponse;
 import eu.tsalliance.auth.model.user.Credentials;
 import eu.tsalliance.auth.model.user.Registration;
-import eu.tsalliance.auth.model.user.User;
-import eu.tsalliance.auth.service.AuthenticationService;
-import eu.tsalliance.auth.service.UserService;
-import eu.tsalliance.auth.utils.RandomUtil;
+import eu.tsalliance.auth.service.account.AuthenticationService;
+import eu.tsalliance.auth.service.account.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.ArrayList;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/api/v1/auth")
@@ -33,6 +28,15 @@ public class AuthenticationController {
     @RequestMapping(value = "signup", method = RequestMethod.POST)
     public Registration signup(@RequestBody Registration registration) throws Exception {
         return this.userService.registerUser(registration);
+    }
+
+    /**
+     * For credentials, only the identifier field is required
+     */
+    @RequestMapping(value = "recover", method = RequestMethod.POST)
+    public ResponseEntity<Object> requestRecovery(@RequestBody Credentials credentials) throws ValidationException {
+        this.authenticationService.requestAccountRecovery(credentials);
+        return ResponseEntity.ok().build();
     }
 
 }

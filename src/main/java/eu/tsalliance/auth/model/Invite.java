@@ -1,5 +1,6 @@
 package eu.tsalliance.auth.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import eu.tsalliance.auth.model.user.User;
 import eu.tsalliance.auth.utils.RandomUtil;
 
@@ -9,6 +10,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "ts_invites")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Invite {
 
     @Id

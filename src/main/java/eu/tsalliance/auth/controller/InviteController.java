@@ -1,5 +1,6 @@
 package eu.tsalliance.auth.controller;
 
+import eu.tsalliance.auth.exception.BadOperationException;
 import eu.tsalliance.auth.model.Invite;
 import eu.tsalliance.auth.model.user.User;
 import eu.tsalliance.auth.service.InviteService;
@@ -7,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,6 +20,7 @@ public class InviteController {
     private InviteService inviteService;
 
     @GetMapping
+    @PreAuthorize("hasAuthority('alliance.invites.read')")
     public Page<Invite> listAll(Pageable pageable) {
         return this.inviteService.findAll(pageable);
     }
@@ -27,17 +31,25 @@ public class InviteController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('alliance.invites.write')")
     public Invite createInvite(@RequestBody Invite invite) throws Exception {
         return this.inviteService.createInvite(invite);
     }
 
     @PostMapping("invite")
-    public Invite inviteMail(@RequestParam("email") String email) throws Exception {
-        // TODO: Authenticate user and get username
-        return this.inviteService.inviteEmail(new User(), email);
+    //@PreAuthorize("hasAuthority('alliance.invites.write')")
+    public Invite inviteMail(@RequestParam("email") String email, Authentication authentication) throws Exception {
+        User user = (User) authentication.getPrincipal();
+
+        if(user.getEmail().equalsIgnoreCase(email)) {
+            throw new BadOperationException();
+        }
+
+        return this.inviteService.inviteEmail(user, email);
     }
 
     @DeleteMapping("{id}")
+    @PreAuthorize("hasAuthority('alliance.invites.write')")
     public void deleteInvite(@PathVariable("id") String id) {
         this.inviteService.deleteInviteById(id);
     }

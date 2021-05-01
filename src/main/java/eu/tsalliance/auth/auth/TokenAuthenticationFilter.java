@@ -1,7 +1,7 @@
 package eu.tsalliance.auth.auth;
 
 import eu.tsalliance.auth.model.user.User;
-import eu.tsalliance.auth.service.AuthenticationService;
+import eu.tsalliance.auth.service.account.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

@@ -8,8 +8,8 @@ public class InviteMailModel extends MailModel {
     private final String inviter;
     private final String inviteUrl;
 
-    public InviteMailModel(String recipient, String inviter, String inviteUrl) {
-        super(recipient, "Du wurdest eingeladen!", "invite.template.html");
+    public InviteMailModel(String baseUrl, String recipient, String inviter, String inviteUrl) {
+        super(baseUrl, recipient, "Du wurdest eingeladen!", "invite.template.html", inviter + " von TSAlliance");
         this.inviter = inviter;
         this.inviteUrl = inviteUrl;
     }

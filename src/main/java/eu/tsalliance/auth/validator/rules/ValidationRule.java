@@ -19,7 +19,7 @@ public abstract class ValidationRule<T, D> {
     private final boolean required;
     private UniqueValidatorFunction uniqueValidatorFunction;
 
-    private final List<Object> failedTests = new ArrayList<>();
+    private final List<Map<String, Object>> failedTests = new ArrayList<>();
 
     public ValidationRule(String fieldname, T subject, boolean required) {
         this.fieldname = fieldname;
@@ -41,7 +41,7 @@ public abstract class ValidationRule<T, D> {
     public String getFieldname() {
         return fieldname;
     }
-    public List<Object> getFailedTests() {
+    public List<Map<String, Object>> getFailedTests() {
         return failedTests;
     }
 
@@ -51,8 +51,7 @@ public abstract class ValidationRule<T, D> {
      * @throws ValidationException ValidationException
      */
     public boolean check() throws ValidationException {
-        if(this.needsValidation()) {
-            this.testInternal();
+        if(this.needsValidation() && this.testInternal()) {
             this.test();
         } else {
             if(this.isRequired()) {
@@ -64,8 +63,6 @@ public abstract class ValidationRule<T, D> {
         return getFailedTests().size() <= 0;
     }
 
-
-
     /**
      * Register a failed test in the registry
      * @param testName Name of the test
@@ -73,12 +70,22 @@ public abstract class ValidationRule<T, D> {
      * @param expectedValue Value that was expected
      */
     protected void putFailedTest(String testName, Object foundValue, Object expectedValue) {
+        this.checkForAndDeleteExistingTest(testName);
+
         Map<String, Object> value = new HashMap<>();
         value.put("name", testName);
         value.put("expected", expectedValue);
         value.put("found", foundValue);
 
         this.failedTests.add(value);
+    }
+
+    /**
+     * Check if a test already failed and delete from list
+     * @param testName Test's name
+     */
+    private void checkForAndDeleteExistingTest(String testName) {
+        this.failedTests.removeIf(test -> test.get("name").toString().equals(testName));
     }
 
     /**
@@ -123,15 +130,17 @@ public abstract class ValidationRule<T, D> {
     /**
      * Perform internal tests like testing for null or unique
      */
-    private void testInternal() {
+    private boolean testInternal() {
         if(this.getSubject() == null) {
-            putFailedTest("isNull", true, false);
-            return;
+            putFailedTest("required", false, true);
+            return false;
         }
 
         if(this.uniqueValidatorFunction != null && !this.uniqueValidatorFunction.validate()) {
             putFailedTest("unique", false, true);
         }
+
+        return true;
     }
 
     @FunctionalInterface

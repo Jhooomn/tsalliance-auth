@@ -1,13 +1,13 @@
-package eu.tsalliance.auth.service;
+package eu.tsalliance.auth.service.account;
 
 import eu.tsalliance.auth.exception.InviteInvalidException;
 import eu.tsalliance.auth.exception.NotFoundException;
 import eu.tsalliance.auth.model.Invite;
-import eu.tsalliance.auth.model.mail.UserCreatedMailModel;
-import eu.tsalliance.auth.model.mail.WelcomeMailModel;
 import eu.tsalliance.auth.model.user.Registration;
 import eu.tsalliance.auth.model.user.User;
 import eu.tsalliance.auth.repository.UserRepository;
+import eu.tsalliance.auth.service.EmailService;
+import eu.tsalliance.auth.service.InviteService;
 import eu.tsalliance.auth.utils.RandomUtil;
 import eu.tsalliance.auth.validator.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,35 +38,13 @@ public class UserService {
     private EmailService emailService;
 
     /**
-     * Get user's database entry. Only public information is exposed
-     * @param id User's id
-     * @return User Optional
-     */
-    public Optional<User> findProfileById(String id) {
-        Optional<User> user = this.findUserById(id);
-        user.ifPresent(value -> {
-            value.setPassword(null);
-            value.setAccessableApps(null);
-            value.setEmail(null);
-            value.setRecoveryToken(null);
-            value.setLinkedAccounts(null);
-        });
-
-        return user;
-    }
-
-    /**
      * Get user's database entry. Sensible data is removed
      * @param id User's id
      * @return User Optional
      */
     public Optional<User> findUserById(String id) {
         Optional<User> user = this.userRepository.findById(id);
-        user.ifPresent(value -> {
-            value.setPassword(null);
-            value.setRecoveryToken(null);
-        });
-        return user;
+        return user.map(User::censored);
     }
 
     /**
@@ -76,11 +54,7 @@ public class UserService {
      */
     public Page<User> findUsers(Pageable pageable) {
         Page<User> result = this.userRepository.findAll(pageable);
-        result.get().forEach(user -> {
-            user.setPassword(null);
-            user.setRecoveryToken(null);
-        });
-        return result;
+        return result.map((User::censored));
     }
 
     /**
@@ -105,16 +79,12 @@ public class UserService {
 
         user = this.userRepository.saveAndFlush(user);
         if(sendCredentialsMail) {
-            this.emailService.sendMail(new UserCreatedMailModel(user.getEmail(), user.getUsername(), rawPassword));
-            // TODO: Fire off an event to send info mail to user containing the credentials
+            this.emailService.sendUserCreatedMail(user.getEmail(), user.getUsername(), rawPassword);
         } else {
-            // TODO: Fire off an event to send welcome mail to user
-            this.emailService.sendMail(new WelcomeMailModel(user.getEmail(), user.getUsername()));
+            this.emailService.sendWelcomeMail(user.getEmail(), user.getUsername());
         }
 
-        user.setPassword(null);
-        user.setRecoveryToken(null);
-        return user;
+        return user.censored();
     }
 
     /**
@@ -179,11 +149,7 @@ public class UserService {
         }
 
         this.validator.throwErrors();
-
-        oldUser = this.userRepository.saveAndFlush(oldUser);
-        oldUser.setPassword(null);
-        oldUser.setRecoveryToken(null);
-        return oldUser;
+        return this.userRepository.saveAndFlush(oldUser).censored();
     }
 
     /**
@@ -214,4 +180,22 @@ public class UserService {
         return this.userRepository.existsByEmailAndIdNot(email, id);
     }
 
+    /**
+     * Find user by their email or username
+     * @param email Email to look for
+     * @param username Username to look for
+     * @return Optional of type User
+     */
+    public Optional<User> findUserByEmailOrUsername(String email, String username) {
+        return this.userRepository.findUserByEmailOrUsername(email, username);
+    }
+
+    /**
+     * Save user data
+     * @param user User's data
+     * @return User
+     */
+    public User saveUser(User user){
+        return this.userRepository.saveAndFlush(user);
+    }
 }

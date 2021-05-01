@@ -7,8 +7,8 @@ public class WelcomeMailModel extends MailModel {
 
     private final String username;
 
-    public WelcomeMailModel(String recipient, String username) {
-        super(recipient, "Willkommen in der Allianz!", "welcome.template.html");
+    public WelcomeMailModel(String baseUrl, String recipient, String username) {
+        super(baseUrl, recipient, "Willkommen in der Allianz!", "welcome.template.html");
         this.username = username;
     }
 

@@ -8,8 +8,8 @@ public class UserCreatedMailModel extends MailModel {
     private final String username;
     private final String password;
 
-    public UserCreatedMailModel(String recipient, String username, String password) {
-        super(recipient, "Willkommen in der Allianz!", "user-created.template.html");
+    public UserCreatedMailModel(String baseUrl, String recipient, String username, String password) {
+        super(baseUrl, recipient, "Willkommen in der Allianz!", "user-created.template.html", username + " von TSAlliance");
         this.username = username;
         this.password = password;
     }

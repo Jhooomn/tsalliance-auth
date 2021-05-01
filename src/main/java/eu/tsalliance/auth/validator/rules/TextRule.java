@@ -51,6 +51,13 @@ public class TextRule extends ValidationRule<String, TextRule> {
 
     @Override
     protected void test() {
+            if(this.getSubject().isEmpty() || this.getSubject().isBlank()) {
+                if(this.isRequired()) {
+                    putFailedTest("required", false, true);
+                    return;
+                }
+            }
+
             if (this.maxLen != -1 && this.getSubject().length() > this.maxLen) {
                 putFailedTest("maxlen", this.getSubject().length(), this.maxLen);
             }
