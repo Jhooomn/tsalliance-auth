@@ -1,5 +1,6 @@
 package eu.tsalliance.auth.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import eu.tsalliance.auth.model.image.Image;
 import eu.tsalliance.auth.utils.RandomUtil;
 
@@ -111,5 +112,16 @@ public class Application {
 
     public void setAccessToken(String accessToken) {
         this.accessToken = accessToken;
+    }
+
+    @Transient
+    @JsonIgnore
+    public Application censored() {
+        Application application = this;
+        application.setClientId(null);
+        application.setAccessToken(null);
+        application.setClientSecret(null);
+
+        return application;
     }
 }

@@ -1,5 +1,6 @@
 package eu.tsalliance.auth.service;
 
+import eu.tsalliance.auth.exception.NotFoundException;
 import eu.tsalliance.auth.exception.ValidationException;
 import eu.tsalliance.auth.model.Application;
 import eu.tsalliance.auth.repository.ApplicationRepository;
@@ -35,6 +36,12 @@ public class ApplicationService {
         return this.applicationRepository.findById(id);
     }
 
+    /**
+     * Register a new application
+     * @param application Application's data
+     * @return Application
+     * @throws Exception Exception
+     */
     public Application createApp(Application application) throws Exception {
         application.setAccessToken(RandomUtil.generateRandomString(64));
         application.setClientId(RandomUtil.generateRandomString(64));
@@ -49,6 +56,46 @@ public class ApplicationService {
         return this.applicationRepository.saveAndFlush(application);
     }
 
+    /**
+     * Register a new application
+     * @param id Application's id
+     * @param updated Application's data
+     * @return Application
+     * @throws Exception Exception
+     */
+    public Application updateApp(String id, Application updated) throws Exception {
+        Optional<Application> application = this.findById(id);
+
+        if(application.isEmpty()) {
+            throw new NotFoundException();
+        }
+
+        if(this.validator.text(application.get().getName(), "name", false).minLen(3).maxLen(32).alpha().unique(() -> !this.existsByNameAndIdNot(application.get().getName(), application.get().getId())).check()) {
+            if(updated.getName() != null) {
+                application.get().setName(updated.getName());
+            }
+        }
+
+        if(this.validator.text(application.get().getName(), "description", false).minLen(3).maxLen(254).check()) {
+            if(updated.getDescription() != null) {
+                application.get().setDescription(updated.getDescription());
+            }
+        }
+
+        if(this.validator.url(application.get().getUrl().toString(), "url", false).unique(() -> !this.existsByUrlAndIdNot(application.get().getUrl(), application.get().getId())).check()) {
+            if(updated.getUrl() != null) {
+                application.get().setUrl(updated.getUrl());
+            }
+        }
+
+        this.validator.throwErrors();
+        return this.applicationRepository.saveAndFlush(application.get());
+    }
+
+    /**
+     * Delete application by id
+     * @param id Application's id
+     */
     public void deleteById(String id) {
         this.applicationRepository.deleteById(id);
     }
