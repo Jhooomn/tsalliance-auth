@@ -1,49 +1,69 @@
 package eu.tsalliance.auth.validator;
 
+import eu.tsalliance.auth.exception.ValidationException;
 import eu.tsalliance.auth.validator.rules.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
 
-import java.util.Date;
+import java.util.*;
 
 @Component
 @RequestScope
 public class Validator {
 
-    public TextRule validateTextAndThrow(String subject, String fieldname, boolean required) {
-        return new TextRule(fieldname, subject, required, true);
+    private List<ValidationRule> rules = new ArrayList<>();
+
+    public TextRule text(String subject, String fieldname, boolean required) {
+        TextRule rule = new TextRule(fieldname, subject, required);
+        this.rules.add(rule);
+        return rule;
     }
 
-    public UrlRule validateUrlAndThrow(String subject, String fieldname, boolean required) {
-        return new UrlRule(fieldname, subject, required, true);
+    public UrlRule url(String subject, String fieldname, boolean required) {
+        UrlRule rule = new UrlRule(fieldname, subject, required);
+        this.rules.add(rule);
+        return rule;
     }
 
-    public EmailRule validateEmailAndThrow(String subject, String fieldname, boolean required) {
-        return new EmailRule(fieldname, subject, required, true);
+    public EmailRule email(String subject, String fieldname, boolean required) {
+        EmailRule rule = new EmailRule(fieldname, subject, required);
+        this.rules.add(rule);
+        return rule;
     }
 
-    public NumberRule validateNumberAndThrow(Integer subject, String fieldname, boolean required) {
-        return new NumberRule(fieldname, subject, required, true);
+    public NumberRule number(Integer subject, String fieldname, boolean required) {
+        NumberRule rule = new NumberRule(fieldname, subject, required);
+        this.rules.add(rule);
+        return rule;
     }
 
-    public DateRule validateDateAndThrow(Date subject, String fieldname, boolean required) {
-        return new DateRule(fieldname, subject, required, true);
+    public DateRule date(Date subject, String fieldname, boolean required) {
+        DateRule rule = new DateRule(fieldname, subject, required);
+        this.rules.add(rule);
+        return rule;
     }
 
-    public PasswordRule validatePasswordAndThrow(String subject, String fieldname, boolean required) {
-        return new PasswordRule(fieldname, subject, required, true);
+    public PasswordRule password(String subject, String fieldname, boolean required) {
+        PasswordRule rule = new PasswordRule(fieldname, subject, required);
+        this.rules.add(rule);
+        return rule;
     }
 
-    public PasswordRule validatePassword(String subject, String fieldname, boolean required) {
-        return new PasswordRule(fieldname, subject, required, false);
-    }
+    public void throwErrors() throws ValidationException {
+        List<Object> errors = new ArrayList<>();
 
-    public TextRule validateText(String subject, String fieldname, boolean required) {
-        return new TextRule(fieldname, subject, required, false);
-    }
+        for(ValidationRule rule : this.rules) {
+            if(rule.getFailedTests().size() > 0) {
+                Map<String, Object> details = new HashMap<>();
+                details.put("fieldname", rule.getFieldname());
+                details.put("failedRules", rule.getFailedTests());
+                errors.add(details);
+            }
+        }
 
-    public boolean isNotEmptyString(String subject) {
-        return subject != null && !subject.isEmpty() && !subject.isBlank();
+        if(!errors.isEmpty()) {
+            throw new ValidationException(errors);
+        }
     }
 
 }

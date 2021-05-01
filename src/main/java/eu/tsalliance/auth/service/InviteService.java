@@ -60,7 +60,7 @@ public class InviteService {
         invite.setUses(0);
 
         if(invite.canExpire()) {
-            this.validator.validateDateAndThrow(invite.getExpiresAt(), "createdAt", false).after(new Date()).check();
+            this.validator.date(invite.getExpiresAt(), "createdAt", false).after(new Date()).check();
         } else {
             invite.setExpiresAt(null);
         }
@@ -70,7 +70,8 @@ public class InviteService {
             invite.setAccessableApps(this.applicationService.findAllIdOnly());
         }
 
-        this.validator.validateNumberAndThrow(invite.getMaxUses(), "maxUses", false).max(Integer.MAX_VALUE).min(1).check();
+        this.validator.number(invite.getMaxUses(), "maxUses", false).max(Integer.MAX_VALUE).min(1).check();
+        this.validator.throwErrors();
 
         return this.inviteRepository.saveAndFlush(invite);
     }
@@ -153,7 +154,8 @@ public class InviteService {
      */
     public Invite inviteEmail(User inviter, String email) throws Exception {
 
-        this.validator.validateEmailAndThrow(email, "email", true).check();
+        this.validator.email(email, "email", true).check();
+        this.validator.throwErrors();
 
         Invite oneTimeInvite = new Invite();
         oneTimeInvite.setCanExpire(false);

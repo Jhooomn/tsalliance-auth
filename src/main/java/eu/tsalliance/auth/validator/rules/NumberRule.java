@@ -1,15 +1,12 @@
 package eu.tsalliance.auth.validator.rules;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class NumberRule extends ValidationRule<Integer, NumberRule> {
 
     private int max = -1;
     private int min = -1;
 
-    public NumberRule(String fieldname, Integer subject, boolean required, boolean throwException) {
-        super(fieldname, subject, required, throwException);
+    public NumberRule(String fieldname, Integer subject, boolean required) {
+        super(fieldname, subject, required);
     }
 
     /**
@@ -48,18 +45,5 @@ public class NumberRule extends ValidationRule<Integer, NumberRule> {
         } catch (NumberFormatException exception) {
             putFailedTest("isNumber", this.getSubject(), true);
         }
-    }
-
-    @Override
-    public Map<String, Object> getRequirements() {
-        Map<String, Object> requirements = new HashMap<>();
-
-        if(this.max != -1) requirements.put("max", this.max);
-        if(this.min != -1) requirements.put("min", this.min);
-
-        requirements.put("isNumber", true);
-        requirements.put("required", this.isRequired());
-
-        return requirements;
     }
 }

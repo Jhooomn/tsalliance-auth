@@ -3,46 +3,45 @@ package eu.tsalliance.auth.validator.rules;
 import eu.tsalliance.auth.exception.ValidationException;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+/**
+ * @param <T> Data type of subject
+ * @param <D> Data type of the rule (usually it is the rule itself)
+ */
 public abstract class ValidationRule<T, D> {
 
     private final T subject;
     private final String fieldname;
     private final boolean required;
     private UniqueValidatorFunction uniqueValidatorFunction;
-    private final boolean throwException;
 
-    private final Map<String, Object> failedTests = new HashMap<>();
+    private final List<Object> failedTests = new ArrayList<>();
 
-    public ValidationRule(String fieldname, T subject, boolean required, boolean throwException) {
+    public ValidationRule(String fieldname, T subject, boolean required) {
         this.fieldname = fieldname;
         this.subject = subject;
         this.required = required;
-        this.throwException = throwException;
     }
 
     /**
      * Execute test
      */
     protected abstract void test();
-    public abstract Map<String, Object> getRequirements();
-
     protected boolean isRequired() {
         return required;
     }
     protected T getSubject() {
         return subject;
     }
-    protected boolean shouldThrowException() {
-        return throwException;
-    }
 
     public String getFieldname() {
         return fieldname;
     }
-    public Map<String, Object> getFailedTests() {
+    public List<Object> getFailedTests() {
         return failedTests;
     }
 
@@ -58,21 +57,11 @@ public abstract class ValidationRule<T, D> {
         } else {
             if(this.isRequired()) {
                 putFailedTest("required", false, this.isRequired());
-
-                // Only throws Exception if shouldException = true
-                this.throwException();
                 return false;
             }
         }
 
-        boolean passed = getFailedTests().size() <= 0;
-
-        if (!passed) {
-            // Only throws Exception if shouldException = true
-            this.throwException();
-        }
-
-        return passed;
+        return getFailedTests().size() <= 0;
     }
 
 
@@ -85,10 +74,11 @@ public abstract class ValidationRule<T, D> {
      */
     protected void putFailedTest(String testName, Object foundValue, Object expectedValue) {
         Map<String, Object> value = new HashMap<>();
+        value.put("name", testName);
         value.put("expected", expectedValue);
-        value.put("value", foundValue);
+        value.put("found", foundValue);
 
-        this.failedTests.put(testName, value);
+        this.failedTests.add(value);
     }
 
     /**
@@ -131,24 +121,11 @@ public abstract class ValidationRule<T, D> {
     }
 
     /**
-     * Throw exception if rule requires exceptions to be thrown
-     * @throws ValidationException Exception
-     */
-    private void throwException() throws ValidationException {
-        if (this.shouldThrowException()) {
-            throw new ValidationException(this);
-        }
-    }
-
-    /**
      * Perform internal tests like testing for null or unique
-     * @throws ValidationException Exception
      */
-    private void testInternal() throws ValidationException {
+    private void testInternal() {
         if(this.getSubject() == null) {
             putFailedTest("isNull", true, false);
-            // Only throws Exception if shouldException = true
-            this.throwException();
             return;
         }
 

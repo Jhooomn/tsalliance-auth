@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public abstract class ApiException extends Exception {
@@ -38,6 +39,9 @@ public abstract class ApiException extends Exception {
         Map<String, Object> details = (Map<String, Object>) this.response.getOrDefault("details", new HashMap());
         details.put(key, value);
 
+        this.response.put("details", details);
+    }
+    protected void setDetailsAsList(List<Object> details){
         this.response.put("details", details);
     }
 

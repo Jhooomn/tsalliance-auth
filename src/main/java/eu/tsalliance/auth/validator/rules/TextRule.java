@@ -1,8 +1,5 @@
 package eu.tsalliance.auth.validator.rules;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class TextRule extends ValidationRule<String, TextRule> {
 
     private int maxLen = -1;
@@ -10,8 +7,8 @@ public class TextRule extends ValidationRule<String, TextRule> {
     private boolean alpha = false;
     private boolean alphaNum = false;
 
-    public TextRule(String fieldname, String subject, boolean required, boolean throwException) {
-        super(fieldname, subject, required, throwException);
+    public TextRule(String fieldname, String subject, boolean required) {
+        super(fieldname, subject, required);
     }
 
     /**
@@ -68,19 +65,5 @@ public class TextRule extends ValidationRule<String, TextRule> {
             if (this.alphaNum && !this.getSubject().matches("^[a-zA-Z0-9]*$")) {
                 putFailedTest("alphaNum", false, true);
             }
-    }
-
-    @Override
-    public Map<String, Object> getRequirements() {
-        Map<String, Object> requirements = new HashMap<>();
-
-        if(this.maxLen != -1) requirements.put("maxlen", this.maxLen);
-        if(this.minLen != -1) requirements.put("minlen", this.minLen);
-
-        requirements.put("alpha", this.alpha);
-        requirements.put("alphaNum", this.alphaNum);
-        requirements.put("required", this.isRequired());
-
-        return requirements;
     }
 }

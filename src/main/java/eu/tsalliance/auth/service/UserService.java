@@ -1,8 +1,6 @@
 package eu.tsalliance.auth.service;
 
-import eu.tsalliance.auth.exception.EmailExistsException;
 import eu.tsalliance.auth.exception.InviteInvalidException;
-import eu.tsalliance.auth.exception.NameExistsException;
 import eu.tsalliance.auth.exception.NotFoundException;
 import eu.tsalliance.auth.model.Invite;
 import eu.tsalliance.auth.model.mail.UserCreatedMailModel;
@@ -97,9 +95,10 @@ public class UserService {
         user.setDiscriminator(RandomUtil.generateRandomNumber(4));
 
         User finalUser = user;
-        validator.validateTextAndThrow(user.getUsername(), "username", true).minLen(3).maxLen(32).alphaNum().unique(() -> !this.existsByUsernameAndIdNot(finalUser.getUsername(), finalUser.getId())).check();
-        validator.validateEmailAndThrow(user.getEmail(), "email", true).unique(() -> !this.existsByEmailAndIdNot(finalUser.getEmail(), finalUser.getId())).check();
-        validator.validatePasswordAndThrow(user.getPassword(), "password", true).check();
+        this.validator.text(user.getUsername(), "username", true).minLen(3).maxLen(32).alphaNum().unique(() -> !this.existsByUsernameAndIdNot(finalUser.getUsername(), finalUser.getId())).check();
+        this.validator.email(user.getEmail(), "email", true).unique(() -> !this.existsByEmailAndIdNot(finalUser.getEmail(), finalUser.getId())).check();
+        this.validator.password(user.getPassword(), "password", true).check();
+        this.validator.throwErrors();
 
         String rawPassword = user.getPassword();
         user.setPassword(this.passwordEncoder.encode(user.getPassword()));
@@ -160,26 +159,26 @@ public class UserService {
 
         User oldUser = optionalUser.get();
 
-        if(this.validator.validateTextAndThrow(updated.getUsername(), "username", false).minLen(3).maxLen(32).alphaNum().check()) {
+        if(this.validator.text(updated.getUsername(), "username", false).minLen(3).maxLen(32).alphaNum().unique(() -> !this.existsByUsernameAndIdNot(updated.getUsername(), updated.getId())).check()) {
             if(updated.getUsername() != null) {
-                if(this.existsByUsernameAndIdNot(updated.getUsername(), oldUser.getId())) throw new NameExistsException();
                 oldUser.setUsername(updated.getUsername());
             }
         }
 
-        if(this.validator.validateEmailAndThrow(updated.getEmail(), "email", false).check()) {
+        if(this.validator.text(updated.getEmail(), "email", false).unique(() -> !this.existsByEmailAndIdNot(updated.getEmail(), updated.getId())).check()) {
             if(updated.getEmail() != null) {
-                if(this.existsByEmailAndIdNot(updated.getUsername(), oldUser.getId())) throw new EmailExistsException();
                 oldUser.setEmail(updated.getEmail());
             }
         }
 
-        if(this.validator.validatePasswordAndThrow(updated.getPassword(), "password", false).check()) {
+        if(this.validator.password(updated.getPassword(), "password", false).check()) {
             if(updated.getPassword() != null) {
                 oldUser.setPassword(this.passwordEncoder.encode(updated.getPassword()));
                 // TODO: Fire password change event to send email to recover account using generated AccountRecoveryToken
             }
         }
+
+        this.validator.throwErrors();
 
         oldUser = this.userRepository.saveAndFlush(oldUser);
         oldUser.setPassword(null);

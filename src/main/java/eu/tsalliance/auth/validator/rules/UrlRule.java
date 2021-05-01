@@ -1,13 +1,11 @@
 package eu.tsalliance.auth.validator.rules;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 public class UrlRule extends ValidationRule<String, UrlRule> {
 
-    public UrlRule(String fieldname, String subject, boolean required, boolean throwException) {
-        super(fieldname, subject, required, throwException);
+    public UrlRule(String fieldname, String subject, boolean required) {
+        super(fieldname, subject, required);
     }
 
     @Override
@@ -17,13 +15,5 @@ public class UrlRule extends ValidationRule<String, UrlRule> {
         if(!this.getSubject().matches(pattern.pattern())) {
             putFailedTest("url", false, true);
         }
-    }
-
-    @Override
-    public Map<String, Object> getRequirements() {
-        Map<String, Object> requirements = new HashMap<>();
-        requirements.put("url", true);
-        requirements.put("required", this.isRequired());
-        return requirements;
     }
 }
