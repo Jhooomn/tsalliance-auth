@@ -164,7 +164,7 @@ public class InviteService {
 
         oneTimeInvite = this.createInvite(oneTimeInvite);
 
-        InviteMailModel mailModel = new InviteMailModel(email, inviter.getUsername(), this.allianceProperties.getUrl() + "auth/register?invite=" + oneTimeInvite.getId());
+        InviteMailModel mailModel = new InviteMailModel(email, inviter.getUsername(), this.allianceProperties.getBaseUrl() + "auth/register?invite=" + oneTimeInvite.getId());
         this.emailService.sendMail(mailModel);
 
         return oneTimeInvite;

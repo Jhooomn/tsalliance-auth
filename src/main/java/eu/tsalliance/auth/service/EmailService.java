@@ -33,7 +33,7 @@ public class EmailService {
         new Thread(() -> {
             try {
                 Context context = new Context();
-                context.setVariable("appUrl", allianceProperties.getUrl());
+                context.setVariable("appUrl", allianceProperties.getBaseUrl());
                 context.setVariable("mailIcon", mailModel.getMailIcon());
                 context.setVariables(mailModel.getThymeleafVariables());
 

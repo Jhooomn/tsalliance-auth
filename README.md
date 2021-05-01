@@ -47,5 +47,5 @@ spring.mail.properties.mail.smtp.auth=true
 spring.mail.properties.mail.smtp.starttls.enable=true
 
 ### Configure this option to change the base url of links in emails
-alliance.url=<BASE_URL>
+alliance.baseUrl=<BASE_URL>
 ````

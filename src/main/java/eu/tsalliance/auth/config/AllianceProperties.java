@@ -7,13 +7,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class AllianceProperties {
 
-    private String url;
+    private String baseUrl;
 
-    public String getUrl() {
-        return url;
+    public String getBaseUrl() {
+        return baseUrl;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
     }
 }
