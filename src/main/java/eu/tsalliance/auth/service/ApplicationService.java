@@ -119,4 +119,13 @@ public class ApplicationService {
         return this.applicationRepository.existsByUrlAndIdNot(url, id);
     }
 
+    /**
+     * Save data to database
+     * @param application Application's data
+     * @return Application
+     */
+    public Application saveApp(Application application) {
+        return this.applicationRepository.saveAndFlush(application);
+    }
+
 }

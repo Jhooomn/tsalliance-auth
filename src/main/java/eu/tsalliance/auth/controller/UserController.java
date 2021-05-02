@@ -29,7 +29,7 @@ public class UserController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAuthority('alliance.users.write') and canModifyUser(#user.role)")
+    @PreAuthorize("hasAuthority('alliance.users.write')")
     public User createUser(@RequestBody User user) throws Exception {
         return this.userService.createUser(user, true);
     }

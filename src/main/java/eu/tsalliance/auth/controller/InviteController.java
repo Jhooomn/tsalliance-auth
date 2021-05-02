@@ -37,7 +37,7 @@ public class InviteController {
     }
 
     @PostMapping("invite")
-    //@PreAuthorize("hasAuthority('alliance.invites.write')")
+    @PreAuthorize("hasAuthority('alliance.invites.write')")
     public Invite inviteMail(@RequestParam("email") String email, Authentication authentication) throws Exception {
         User user = (User) authentication.getPrincipal();
 

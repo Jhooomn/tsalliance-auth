@@ -38,7 +38,7 @@ public class ImageController {
     }
 
     @PostMapping("avatars")
-    public Image uploadLogo(MultipartFile file, Authentication authentication) throws IOException, MimeTypeNotSupported, NotFoundException {
+    public Image uploadAvatar(MultipartFile file, Authentication authentication) throws IOException, MimeTypeNotSupported, NotFoundException {
         return this.fileStorageService.storeAvatar(file, ((User) authentication.getPrincipal()).getId());
     }
 

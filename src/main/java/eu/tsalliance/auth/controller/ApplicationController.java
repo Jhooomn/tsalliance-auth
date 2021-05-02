@@ -1,7 +1,6 @@
 package eu.tsalliance.auth.controller;
 
 import eu.tsalliance.auth.model.Application;
-import eu.tsalliance.auth.model.Invite;
 import eu.tsalliance.auth.service.ApplicationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -32,9 +31,14 @@ public class ApplicationController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAuthority('alliance.applications.read')")
-    public Page<Application> listAll(Pageable pageable) {
-        return this.applicationService.findAll(pageable);
+    public Page<Application> listAll(Pageable pageable, Authentication authentication) {
+        Page<Application> application = this.applicationService.findAll(pageable);
+
+        if(!authentication.getAuthorities().contains("alliance.applications.read")) {
+            return application.map(Application::censored);
+        }
+
+        return application;
     }
 
     @PostMapping

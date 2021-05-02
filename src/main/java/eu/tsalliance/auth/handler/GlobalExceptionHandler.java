@@ -21,4 +21,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
+    // TODO: Catch SizeLimitExceededException
+
 }
