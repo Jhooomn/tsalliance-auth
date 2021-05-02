@@ -1,5 +1,6 @@
 package eu.tsalliance.auth.auth;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -19,7 +20,10 @@ public class AuthEntryPoint implements AuthenticationEntryPoint, AccessDeniedHan
 
     @Override
     public void handle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AccessDeniedException e) throws IOException, ServletException {
-        // TODO: Handle access denied
-        System.out.println("access denied error");
+        eu.tsalliance.auth.exception.account.AccessDeniedException exception = new eu.tsalliance.auth.exception.account.AccessDeniedException();
+
+        httpServletResponse.setContentType("application/json;charset=utf-8");
+        httpServletResponse.setStatus(exception.getHttpStatus().value());
+        httpServletResponse.getOutputStream().write(new ObjectMapper().writeValueAsBytes(exception.getResponse()));
     }
 }
