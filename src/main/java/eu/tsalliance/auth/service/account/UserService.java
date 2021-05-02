@@ -13,6 +13,7 @@ import eu.tsalliance.validator.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -45,6 +46,10 @@ public class UserService {
     public Optional<User> findUserById(String id) {
         Optional<User> user = this.userRepository.findById(id);
         return user.map(User::censored);
+    }
+
+    public Optional<User> findCurrentUser(Authentication authentication) throws NotFoundException {
+        return this.userRepository.findById(Optional.ofNullable((User) authentication.getPrincipal()).orElseThrow(NotFoundException::new).getId());
     }
 
     /**

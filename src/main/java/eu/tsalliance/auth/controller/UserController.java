@@ -2,11 +2,13 @@ package eu.tsalliance.auth.controller;
 
 import eu.tsalliance.auth.model.user.User;
 import eu.tsalliance.auth.service.account.UserService;
+import eu.tsalliance.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,6 +17,12 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @RequestMapping(path = "@me", method = RequestMethod.GET)
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<User> getCurrent(Authentication authentication) throws NotFoundException {
+        return ResponseEntity.of(this.userService.findCurrentUser(authentication));
+    }
 
     @RequestMapping(path = "{id}", method = RequestMethod.GET)
     @PreAuthorize("hasPermission('alliance.users.read')")
