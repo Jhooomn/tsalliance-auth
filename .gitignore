@@ -19,7 +19,9 @@ mvnw.cmd
 .sts4-cache
 
 ### IntelliJ IDEA ###
-.idea
+.idea/artifacts
+.idea/libraries
+.idea/.gitignore
 *.iws
 *.iml
 *.ipr
