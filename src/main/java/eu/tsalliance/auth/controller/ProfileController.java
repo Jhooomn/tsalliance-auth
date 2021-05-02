@@ -3,6 +3,8 @@ package eu.tsalliance.auth.controller;
 import eu.tsalliance.auth.model.user.Profile;
 import eu.tsalliance.auth.service.account.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +21,11 @@ public class ProfileController {
     @GetMapping("{id}")
     public ResponseEntity<Profile> getProfile(@PathVariable("id") String id) {
         return ResponseEntity.of(this.profileService.findProfileById(id));
+    }
+
+    @GetMapping
+    public Page<Profile> listProfiles(Pageable pageable) {
+        return this.profileService.listProfiles(pageable);
     }
 
 }
