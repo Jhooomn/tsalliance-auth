@@ -1,11 +1,10 @@
 package eu.tsalliance.auth.service;
 
-import eu.tsalliance.auth.exception.NotFoundException;
-import eu.tsalliance.auth.exception.ValidationException;
 import eu.tsalliance.auth.model.Application;
 import eu.tsalliance.auth.repository.ApplicationRepository;
 import eu.tsalliance.auth.utils.RandomUtil;
-import eu.tsalliance.auth.validator.Validator;
+import eu.tsalliance.exception.NotFoundException;
+import eu.tsalliance.validator.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

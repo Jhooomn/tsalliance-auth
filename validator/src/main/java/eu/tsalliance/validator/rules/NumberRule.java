@@ -1,4 +1,4 @@
-package eu.tsalliance.auth.validator.rules;
+package eu.tsalliance.validator.rules;
 
 public class NumberRule extends ValidationRule<Integer, NumberRule> {
 

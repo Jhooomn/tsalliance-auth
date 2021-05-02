@@ -1,6 +1,6 @@
-package eu.tsalliance.auth.validator.rules;
+package eu.tsalliance.validator.rules;
 
-import eu.tsalliance.auth.exception.ValidationException;
+import eu.tsalliance.validator.exception.ValidationException;
 
 import java.net.URL;
 import java.util.ArrayList;

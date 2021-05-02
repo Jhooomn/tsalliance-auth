@@ -1,7 +1,6 @@
 package eu.tsalliance.auth.service.account;
 
 import eu.tsalliance.auth.exception.invalid.InviteInvalidException;
-import eu.tsalliance.auth.exception.NotFoundException;
 import eu.tsalliance.auth.model.Invite;
 import eu.tsalliance.auth.model.forms.Registration;
 import eu.tsalliance.auth.model.user.User;
@@ -9,7 +8,8 @@ import eu.tsalliance.auth.repository.UserRepository;
 import eu.tsalliance.auth.service.EmailService;
 import eu.tsalliance.auth.service.InviteService;
 import eu.tsalliance.auth.utils.RandomUtil;
-import eu.tsalliance.auth.validator.Validator;
+import eu.tsalliance.exception.NotFoundException;
+import eu.tsalliance.validator.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

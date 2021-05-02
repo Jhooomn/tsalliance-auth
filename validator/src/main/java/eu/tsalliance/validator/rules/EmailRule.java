@@ -1,4 +1,4 @@
-package eu.tsalliance.auth.validator.rules;
+package eu.tsalliance.validator.rules;
 
 import java.util.regex.Pattern;
 

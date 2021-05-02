@@ -1,7 +1,7 @@
-package eu.tsalliance.auth.validator;
+package eu.tsalliance.validator;
 
-import eu.tsalliance.auth.exception.ValidationException;
-import eu.tsalliance.auth.validator.rules.*;
+import eu.tsalliance.validator.exception.ValidationException;
+import eu.tsalliance.validator.rules.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
 

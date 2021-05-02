@@ -1,10 +1,10 @@
-package eu.tsalliance.auth.exception;
+package eu.tsalliance.validator.exception;
 
-import eu.tsalliance.auth.validator.rules.ValidationRule;
+import eu.tsalliance.exception.ApiException;
+import eu.tsalliance.validator.rules.ValidationRule;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
-import java.util.Map;
 
 public class ValidationException extends ApiException {
 

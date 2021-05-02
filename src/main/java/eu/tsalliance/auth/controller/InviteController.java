@@ -1,9 +1,9 @@
 package eu.tsalliance.auth.controller;
 
-import eu.tsalliance.auth.exception.BadOperationException;
 import eu.tsalliance.auth.model.Invite;
 import eu.tsalliance.auth.model.user.User;
 import eu.tsalliance.auth.service.InviteService;
+import eu.tsalliance.exception.BadOperationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
