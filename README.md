@@ -49,3 +49,11 @@ spring.mail.properties.mail.smtp.starttls.enable=true
 ### Configure this option to change the base url of links in emails
 alliance.baseUrl=<BASE_URL>
 ````
+
+#### Configure upload size limits
+Here you can limit the upload file size limits. The values you see here are the default 
+configured values by the application
+````
+spring.servlet.multipart.max-file-size=8000MB
+spring.servlet.multipart.max-request-size=8100MB
+````
