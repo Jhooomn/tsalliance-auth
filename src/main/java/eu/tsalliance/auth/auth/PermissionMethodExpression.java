@@ -26,8 +26,8 @@ public class PermissionMethodExpression extends SecurityExpressionRoot implement
     }
 
     public boolean hasPermission(String permission) {
-        Optional<Collection<? extends GrantedAuthority>> permissions = Optional.ofNullable(this.authentication.getAuthorities());
-        return permissions.orElse(new ArrayList<>()).contains(permission);
+        Collection<? extends GrantedAuthority> permissions = Optional.ofNullable(this.authentication.getAuthorities()).orElse(new ArrayList<>());
+        return permissions.contains("*") || permissions.contains(permission);
     }
 
     public boolean canModifyUser(User user) {
