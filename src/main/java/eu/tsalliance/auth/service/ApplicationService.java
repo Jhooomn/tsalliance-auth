@@ -23,7 +23,7 @@ public class ApplicationService {
     @Autowired
     private Validator validator;
 
-    protected List<Application> findAllIdOnly() {
+    public List<Application> findAllIdOnly() {
         return this.applicationRepository.getAppsIdOnly();
     }
 

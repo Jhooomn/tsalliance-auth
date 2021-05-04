@@ -14,6 +14,15 @@ public class RandomUtil {
     }
 
     /**
+     * Generate a random number as string
+     * @param length Amount of digits
+     * @return String
+     */
+    public static String generateRandomNumberString(int length) {
+        return generateStringFromCharset(length, "0123456789");
+    }
+
+    /**
      * Generate a random number
      * @param length Amount of digits
      * @return Integer
