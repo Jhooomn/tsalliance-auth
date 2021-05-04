@@ -1,9 +1,10 @@
 package eu.tsalliance.auth.model.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import eu.tsalliance.auth.converter.StringSetConverter;
+
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "ts_roles")
@@ -13,13 +14,21 @@ public class Role {
     private String id = UUID.randomUUID().toString();
 
     @Column(unique = true, length = 32, nullable = false)
-    private String roleName;
+    private String name;
 
     private int hierarchy = 0;
 
-    @ElementCollection
-    @JoinTable(name = "ts_roles_permissions")
-    private List<String> permissions = new ArrayList<>();
+    @Column(nullable = false, columnDefinition = "text")
+    @Convert(converter = StringSetConverter.class)
+    private Set<String> permissions;
+
+    public Set<String> getPermissions() {
+        return permissions;
+    }
+
+    public void setPermissions(Set<String> permissions) {
+        this.permissions = permissions;
+    }
 
     public String getId() {
         return id;
@@ -29,20 +38,12 @@ public class Role {
         this.id = id;
     }
 
-    public String getRoleName() {
-        return roleName;
+    public String getName() {
+        return name;
     }
 
-    public void setRoleName(String roleName) {
-        this.roleName = roleName;
-    }
-
-    public List<String> getPermissions() {
-        return permissions;
-    }
-
-    public void setPermissions(List<String> permissions) {
-        this.permissions = permissions;
+    public void setName(String roleName) {
+        this.name = roleName;
     }
 
     public int getHierarchy() {
@@ -51,5 +52,15 @@ public class Role {
 
     public void setHierarchy(int hierarchy) {
         this.hierarchy = hierarchy;
+    }
+
+    @Transient
+    @JsonIgnore
+    public Role censored() {
+        Role role = this;
+        role.setPermissions(null);
+        role.setHierarchy(0);
+
+        return role;
     }
 }

@@ -89,7 +89,7 @@ public class AuthenticationService {
             String userId = String.valueOf(claims.get("id"));
             String etag = String.valueOf(claims.get("etag"));
 
-            Optional<User> user = this.userService.findUserById(userId);
+            Optional<User> user = this.userService.findUserByIdNonCensored(userId);
             if(user.isEmpty()) {
                 throw new AccountNotFoundException();
             }

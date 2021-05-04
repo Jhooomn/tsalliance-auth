@@ -12,10 +12,10 @@ public class Profile {
     private String username;
     private Date createdAt;
     private Image avatar;
-    private int discriminator;
+    private String discriminator;
     private List<LinkedAccount> linkedAccounts;
 
-    public Profile(String id, String username, int discriminator, Date createdAt, Image avatar, List<LinkedAccount> linkedAccounts) {
+    public Profile(String id, String username, String discriminator, Date createdAt, Image avatar, List<LinkedAccount> linkedAccounts) {
         this.id = id;
         this.username = username;
         this.createdAt = createdAt;
@@ -64,11 +64,11 @@ public class Profile {
         this.linkedAccounts = linkedAccounts;
     }
 
-    public int getDiscriminator() {
+    public String getDiscriminator() {
         return discriminator;
     }
 
-    public void setDiscriminator(int discriminator) {
+    public void setDiscriminator(String discriminator) {
         this.discriminator = discriminator;
     }
 }

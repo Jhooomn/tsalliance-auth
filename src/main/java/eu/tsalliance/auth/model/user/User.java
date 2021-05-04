@@ -29,7 +29,7 @@ public class User implements UserDetails {
 
     @Column(nullable = false, unique = true, length = 32)
     private String username;
-    private int discriminator = RandomUtil.generateRandomNumber(4);
+    private String discriminator = RandomUtil.generateRandomNumberString(4);
     private Date createdAt = new Date();
 
     @Column(nullable = false)
@@ -86,11 +86,11 @@ public class User implements UserDetails {
         this.username = username;
     }
 
-    public int getDiscriminator() {
+    public String getDiscriminator() {
         return discriminator;
     }
 
-    public void setDiscriminator(int discriminator) {
+    public void setDiscriminator(String discriminator) {
         this.discriminator = discriminator;
     }
 
@@ -191,6 +191,10 @@ public class User implements UserDetails {
         User user = this;
         user.setRecoveryToken(null);
         user.setPassword(null);
+
+        if(user.getRole() != null) {
+            user.setRole(user.getRole().censored());
+        }
 
         return user;
     }

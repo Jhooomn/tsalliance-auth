@@ -1,10 +1,12 @@
 package eu.tsalliance.auth.service.account;
 
+import eu.tsalliance.auth.exception.account.AccessDeniedException;
 import eu.tsalliance.auth.exception.invalid.InviteInvalidException;
 import eu.tsalliance.auth.model.Invite;
 import eu.tsalliance.auth.model.forms.Registration;
 import eu.tsalliance.auth.model.user.User;
 import eu.tsalliance.auth.repository.UserRepository;
+import eu.tsalliance.auth.service.ApplicationService;
 import eu.tsalliance.auth.service.EmailService;
 import eu.tsalliance.auth.service.InviteService;
 import eu.tsalliance.auth.utils.RandomUtil;
@@ -17,11 +19,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
 public class UserService {
+
+    private final String ROOT_USER_NAME = "root";
 
     @Autowired
     private UserRepository userRepository;
@@ -38,6 +43,24 @@ public class UserService {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private RoleService roleService;
+
+    @Autowired
+    private ApplicationService applicationService;
+
+    @PostConstruct
+    private void createRootUser() throws Exception {
+        User user = new User();
+        user.setUsername(ROOT_USER_NAME);
+        user.setRole(this.roleService.getRootRole());
+        user.setAccessableApps(this.applicationService.findAllIdOnly());
+        user.setPassword("#Hackme1");
+        user.setEmail("localhost@webmaster.local");
+
+        this.findOrCreateUserByName(ROOT_USER_NAME, user);
+    }
+
     /**
      * Get user's database entry. Sensible data is removed
      * @param id User's id
@@ -48,6 +71,21 @@ public class UserService {
         return user.map(User::censored);
     }
 
+    /**
+     * Get user's database entry
+     * @param id User's id
+     * @return User Optional
+     */
+    public Optional<User> findUserByIdNonCensored(String id) {
+        return this.userRepository.findById(id);
+    }
+
+    /**
+     * Find user associated with authentication
+     * @param authentication Authentication object
+     * @return Optional of type User
+     * @throws NotFoundException Exception
+     */
     public Optional<User> findCurrentUser(Authentication authentication) throws NotFoundException {
         return this.userRepository.findById(Optional.ofNullable((User) authentication.getPrincipal()).orElseThrow(NotFoundException::new).getId());
     }
@@ -71,7 +109,7 @@ public class UserService {
      */
     public User createUser(User user, boolean sendCredentialsMail) throws Exception {
         user.setLinkedAccounts(new ArrayList<>());
-        user.setDiscriminator(RandomUtil.generateRandomNumber(4));
+        user.setDiscriminator(RandomUtil.generateRandomNumberString(4));
 
         User finalUser = user;
         this.validator.text(user.getUsername(), "username", true).minLen(3).maxLen(32).alphaNum().unique(() -> !this.existsByUsernameAndIdNot(finalUser.getUsername(), finalUser.getId())).check();
@@ -126,14 +164,17 @@ public class UserService {
      * @throws Exception Exception
      */
     public User updateUser(String id, User updated) throws Exception {
-        Optional<User> optionalUser = this.findUserById(id);
+        Optional<User> user = this.findUserById(id);
 
-        if(optionalUser.isEmpty()) {
+        if(user.isEmpty()) {
             throw new NotFoundException();
         }
 
-        User oldUser = optionalUser.get();
+        if(user.get().getUsername().equals(ROOT_USER_NAME)) {
+            throw new AccessDeniedException();
+        }
 
+        User oldUser = user.get();
         if(this.validator.text(updated.getUsername(), "username", false).minLen(3).maxLen(32).alphaNum().unique(() -> !this.existsByUsernameAndIdNot(updated.getUsername(), updated.getId())).check()) {
             if(updated.getUsername() != null) {
                 oldUser.setUsername(updated.getUsername());
@@ -154,6 +195,7 @@ public class UserService {
         }
 
         this.validator.throwErrors();
+
         return this.userRepository.saveAndFlush(oldUser).censored();
     }
 
@@ -161,7 +203,12 @@ public class UserService {
      * Delete an user entry by id
      * @param id User's id
      */
-    public void deleteUser(String id) {
+    public void deleteUser(String id) throws Exception {
+
+        if(this.findUserById(id).orElse(new User()).getUsername().equals(ROOT_USER_NAME)) {
+            throw new AccessDeniedException();
+        }
+
         this.userRepository.deleteById(id);
     }
 
@@ -202,5 +249,22 @@ public class UserService {
      */
     public User saveUser(User user){
         return this.userRepository.saveAndFlush(user);
+    }
+
+    /**
+     * Find a user by their name. If it does not exist, a new user is created
+     * @param name Name of the role
+     * @param create User's data to be created
+     * @return User
+     * @throws Exception Exception
+     */
+    public User findOrCreateUserByName(String name, User create) throws Exception {
+        Optional<User> user = this.userRepository.findByUsername(name);
+
+        if(user.isEmpty()) {
+            return this.createUser(create, false);
+        }
+
+        return user.get();
     }
 }

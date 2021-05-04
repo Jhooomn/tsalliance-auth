@@ -50,7 +50,7 @@ public class UserController {
 
     @DeleteMapping("{id}")
     @PreAuthorize("hasAuthority('alliance.users.write')")
-    public void deleteUser(@PathVariable("id") String id) {
+    public void deleteUser(@PathVariable("id") String id) throws Exception {
         this.userService.deleteUser(id);
     }
 

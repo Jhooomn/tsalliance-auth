@@ -1,16 +1,20 @@
 package eu.tsalliance.auth.controller;
 
 import eu.tsalliance.auth.model.Application;
+import eu.tsalliance.auth.model.user.User;
 import eu.tsalliance.auth.service.ApplicationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/applications")
@@ -34,8 +38,10 @@ public class ApplicationController {
     public Page<Application> listAll(Pageable pageable, Authentication authentication) {
         Page<Application> application = this.applicationService.findAll(pageable);
 
+        // If user does not have permissions to read apps, so show only the apps they have access to
         if(!authentication.getAuthorities().contains("alliance.applications.read")) {
-            return application.map(Application::censored);
+            List<Application> apps = ((User) authentication.getPrincipal()).getAccessableApps();
+            return new PageImpl<>(apps.stream().map(Application::censored).collect(Collectors.toList()));
         }
 
         return application;

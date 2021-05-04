@@ -10,7 +10,9 @@ import org.springframework.security.core.GrantedAuthority;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class PermissionMethodExpression extends SecurityExpressionRoot implements MethodSecurityExpressionOperations {
 
@@ -26,7 +28,9 @@ public class PermissionMethodExpression extends SecurityExpressionRoot implement
     }
 
     public boolean hasPermission(String permission) {
-        Collection<? extends GrantedAuthority> permissions = Optional.ofNullable(this.authentication.getAuthorities()).orElse(new ArrayList<>());
+        Collection<? extends GrantedAuthority> authorities = Optional.ofNullable(this.authentication.getAuthorities()).orElse(new ArrayList<>());
+        List<String> permissions = authorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
+
         return permissions.contains("*") || permissions.contains(permission);
     }
 
