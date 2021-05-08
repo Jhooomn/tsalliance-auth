@@ -8,7 +8,7 @@ and service discovery.
 2. Basic setup
 
 ### 1. Prerequisites
-* Java 8
+* Java 11+
 * When deploying as .war file, you need Tomcat 9+
 * MySQL as database is recommended (because of spring's nature you could use any SQL database, but at your own risk)
 * SMTP Server (Optional)

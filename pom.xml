@@ -12,8 +12,8 @@
 
     <groupId>eu.tsalliance</groupId>
     <artifactId>auth</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <version>1.0</version>
+    <packaging>jar</packaging>
     <name>auth</name>
     <description>TSAlliance Auth Service</description>
 
@@ -23,16 +23,11 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>eu.tsalliance</groupId>
-            <artifactId>exception</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
 
         <dependency>
             <groupId>eu.tsalliance</groupId>
-            <artifactId>validator</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <artifactId>apiutils</artifactId>
+            <version>1.2</version>
         </dependency>
 
         <dependency>

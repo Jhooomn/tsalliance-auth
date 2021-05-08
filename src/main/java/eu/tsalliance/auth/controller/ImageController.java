@@ -1,10 +1,10 @@
 package eu.tsalliance.auth.controller;
 
+import eu.tsalliance.apiutils.exception.MimeTypeNotSupported;
+import eu.tsalliance.apiutils.exception.NotFoundException;
 import eu.tsalliance.auth.model.image.Image;
 import eu.tsalliance.auth.model.user.User;
 import eu.tsalliance.auth.service.FileStorageService;
-import eu.tsalliance.exception.MimeTypeNotSupported;
-import eu.tsalliance.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;

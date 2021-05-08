@@ -1,8 +1,8 @@
 package eu.tsalliance.auth.controller;
 
+import eu.tsalliance.apiutils.exception.NotFoundException;
 import eu.tsalliance.auth.model.user.User;
 import eu.tsalliance.auth.service.account.UserService;
-import eu.tsalliance.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

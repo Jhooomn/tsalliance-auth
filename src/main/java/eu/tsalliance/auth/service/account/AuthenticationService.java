@@ -1,5 +1,8 @@
 package eu.tsalliance.auth.service.account;
 
+import eu.tsalliance.apiutils.exception.NotFoundException;
+import eu.tsalliance.apiutils.validator.Validator;
+import eu.tsalliance.apiutils.validator.exception.ValidationException;
 import eu.tsalliance.auth.exception.account.AccountNotFoundException;
 import eu.tsalliance.auth.exception.account.InvalidCredentialsException;
 import eu.tsalliance.auth.exception.account.InvalidSessionException;
@@ -12,9 +15,6 @@ import eu.tsalliance.auth.model.user.RecoveryToken;
 import eu.tsalliance.auth.model.user.User;
 import eu.tsalliance.auth.service.EmailService;
 import eu.tsalliance.auth.utils.CryptUtil;
-import eu.tsalliance.exception.NotFoundException;
-import eu.tsalliance.validator.Validator;
-import eu.tsalliance.validator.exception.ValidationException;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;

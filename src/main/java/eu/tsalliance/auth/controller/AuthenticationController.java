@@ -1,12 +1,12 @@
 package eu.tsalliance.auth.controller;
 
+import eu.tsalliance.apiutils.validator.exception.ValidationException;
 import eu.tsalliance.auth.model.forms.PasswordRecovery;
 import eu.tsalliance.auth.model.response.JwtTokenResponse;
 import eu.tsalliance.auth.model.forms.Credentials;
 import eu.tsalliance.auth.model.forms.Registration;
 import eu.tsalliance.auth.service.account.AuthenticationService;
 import eu.tsalliance.auth.service.account.UserService;
-import eu.tsalliance.validator.exception.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

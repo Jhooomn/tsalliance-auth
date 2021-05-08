@@ -1,10 +1,10 @@
 package eu.tsalliance.auth.service.account;
 
+import eu.tsalliance.apiutils.exception.NotFoundException;
+import eu.tsalliance.apiutils.validator.Validator;
 import eu.tsalliance.auth.exception.account.AccessDeniedException;
 import eu.tsalliance.auth.model.user.Role;
 import eu.tsalliance.auth.repository.RoleRepository;
-import eu.tsalliance.exception.NotFoundException;
-import eu.tsalliance.validator.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
