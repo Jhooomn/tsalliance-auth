@@ -1,10 +1,9 @@
 package eu.tsalliance.auth.service;
 
-import eu.tsalliance.auth.config.AllianceProperties;
+import eu.tsalliance.apiutils.validator.Validator;
 import eu.tsalliance.auth.model.Invite;
 import eu.tsalliance.auth.model.user.User;
 import eu.tsalliance.auth.repository.InviteRepository;
-import eu.tsalliance.validator.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,9 +26,6 @@ public class InviteService {
 
     @Autowired
     private Validator validator;
-
-    @Autowired
-    private AllianceProperties allianceProperties;
 
     /**
      * Get an invite from the database by its id

@@ -23,16 +23,11 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>eu.tsalliance</groupId>
-            <artifactId>exception</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
 
         <dependency>
             <groupId>eu.tsalliance</groupId>
-            <artifactId>validator</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <artifactId>apiutils</artifactId>
+            <version>1.2</version>
         </dependency>
 
         <dependency>
@@ -102,6 +97,7 @@
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
     </dependencies>
+
     <dependencyManagement>
         <dependencies>
             <dependency>

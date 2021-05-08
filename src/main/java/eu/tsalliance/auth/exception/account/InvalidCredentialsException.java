@@ -1,11 +1,12 @@
 package eu.tsalliance.auth.exception.account;
 
-import eu.tsalliance.exception.ApiException;
+import eu.tsalliance.apiutils.exception.ApiException;
 import org.springframework.http.HttpStatus;
 
 public class InvalidCredentialsException extends ApiException {
+
     public InvalidCredentialsException() {
-        super("Password and Email or Username do not match.", HttpStatus.BAD_REQUEST);
+        super("Password and Email or Username do not match.", HttpStatus.BAD_REQUEST.value());
     }
 
     @Override

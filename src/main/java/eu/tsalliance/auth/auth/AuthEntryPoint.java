@@ -23,7 +23,7 @@ public class AuthEntryPoint implements AuthenticationEntryPoint, AccessDeniedHan
         eu.tsalliance.auth.exception.account.AccessDeniedException exception = new eu.tsalliance.auth.exception.account.AccessDeniedException();
 
         httpServletResponse.setContentType("application/json;charset=utf-8");
-        httpServletResponse.setStatus(exception.getHttpStatus().value());
+        httpServletResponse.setStatus(exception.getHttpStatus());
         httpServletResponse.getOutputStream().write(new ObjectMapper().writeValueAsBytes(exception.getResponse()));
     }
 }

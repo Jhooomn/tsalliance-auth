@@ -1,5 +1,7 @@
 package eu.tsalliance.auth.service;
 
+import eu.tsalliance.apiutils.exception.MimeTypeNotSupported;
+import eu.tsalliance.apiutils.exception.NotFoundException;
 import eu.tsalliance.auth.config.StorageConfig;
 import eu.tsalliance.auth.model.Application;
 import eu.tsalliance.auth.model.image.Image;
@@ -7,8 +9,6 @@ import eu.tsalliance.auth.model.user.User;
 import eu.tsalliance.auth.repository.ImageRepository;
 import eu.tsalliance.auth.service.account.UserService;
 import eu.tsalliance.auth.utils.RandomUtil;
-import eu.tsalliance.exception.MimeTypeNotSupported;
-import eu.tsalliance.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 
