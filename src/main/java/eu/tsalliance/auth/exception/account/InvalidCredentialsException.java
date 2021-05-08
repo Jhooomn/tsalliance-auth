@@ -4,6 +4,7 @@ import eu.tsalliance.apiutils.exception.ApiException;
 import org.springframework.http.HttpStatus;
 
 public class InvalidCredentialsException extends ApiException {
+
     public InvalidCredentialsException() {
         super("Password and Email or Username do not match.", HttpStatus.BAD_REQUEST.value());
     }
