@@ -21,12 +21,12 @@ public class AuthenticationController {
     @Autowired
     private UserService userService;
 
-    @RequestMapping(value = "signin", method = RequestMethod.POST)
+    @PostMapping(value = "signin")
     public JwtTokenResponse signin(@RequestBody Credentials credentials) throws Exception {
         return this.authenticationService.signin(credentials);
     }
 
-    @RequestMapping(value = "signup", method = RequestMethod.POST)
+    @PostMapping(value = "signup")
     public Registration signup(@RequestBody Registration registration) throws Exception {
         return this.userService.registerUser(registration);
     }
@@ -34,13 +34,13 @@ public class AuthenticationController {
     /**
      * For credentials, only the identifier field is required
      */
-    @RequestMapping(value = "recover", method = RequestMethod.POST)
+    @PostMapping(value = "recover")
     public ResponseEntity<Object> requestRecovery(@RequestBody Credentials credentials) throws ValidationException {
         this.authenticationService.requestAccountRecovery(credentials);
         return ResponseEntity.ok().build();
     }
 
-    @RequestMapping(value = "recover", method = RequestMethod.PUT)
+    @PutMapping(value = "recover")
     public ResponseEntity<Object> requestRecovery(@RequestBody PasswordRecovery passwordRecovery) throws Exception {
         this.authenticationService.recoverAccount(passwordRecovery);
         return ResponseEntity.ok().build();

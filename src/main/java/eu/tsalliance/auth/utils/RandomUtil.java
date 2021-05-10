@@ -1,7 +1,9 @@
 package eu.tsalliance.auth.utils;
 
-import java.util.Random;
+import lombok.experimental.UtilityClass;
 
+import java.util.Random;
+@UtilityClass
 public class RandomUtil {
 
     /**

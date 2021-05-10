@@ -5,12 +5,14 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.io.Encoders;
 import io.jsonwebtoken.security.Keys;
 
-import javax.crypto.KeyGenerator;
+
 import javax.crypto.SecretKey;
-import java.io.*;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Files;
-import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
+
 
 public class CryptUtil {
 

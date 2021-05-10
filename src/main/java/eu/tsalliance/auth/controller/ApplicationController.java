@@ -20,6 +20,8 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1/applications")
 public class ApplicationController {
 
+    public static final String ALLIANCE_APPLICATIONS_READ = "alliance.applications.read";
+    public static final String HAS_AUTHORITY_ALLIANCE_APPLICATIONS_WRITE = "hasAuthority('alliance.applications.write')";
     @Autowired
     private ApplicationService applicationService;
 
@@ -27,7 +29,7 @@ public class ApplicationController {
     public ResponseEntity<Application> findApp(@PathVariable("id") String id, Authentication authentication) {
         Optional<Application> application = this.applicationService.findById(id);
 
-        if(!authentication.getAuthorities().contains("alliance.applications.read")) {
+        if(!authentication.getAuthorities().contains(ALLIANCE_APPLICATIONS_READ)) {
             return ResponseEntity.of(application.map(Application::censored));
         }
 
@@ -39,7 +41,7 @@ public class ApplicationController {
         Page<Application> application = this.applicationService.findAll(pageable);
 
         // If user does not have permissions to read apps, so show only the apps they have access to
-        if(!authentication.getAuthorities().contains("alliance.applications.read")) {
+        if(!authentication.getAuthorities().contains(ALLIANCE_APPLICATIONS_READ)) {
             List<Application> apps = ((User) authentication.getPrincipal()).getAccessableApps();
             return new PageImpl<>(apps.stream().map(Application::censored).collect(Collectors.toList()));
         }
@@ -48,19 +50,19 @@ public class ApplicationController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAuthority('alliance.applications.write')")
+    @PreAuthorize(HAS_AUTHORITY_ALLIANCE_APPLICATIONS_WRITE)
     public Application createApp(@RequestBody Application application) throws Exception {
         return this.applicationService.createApp(application);
     }
 
     @PutMapping("{id}")
-    @PreAuthorize("hasAuthority('alliance.applications.write')")
+    @PreAuthorize(HAS_AUTHORITY_ALLIANCE_APPLICATIONS_WRITE)
     public Application updateApp(@PathVariable("id") String id, @RequestBody Application application) throws Exception {
         return this.applicationService.updateApp(id, application);
     }
 
     @DeleteMapping("{id}")
-    @PreAuthorize("hasAuthority('alliance.applications.write')")
+    @PreAuthorize(HAS_AUTHORITY_ALLIANCE_APPLICATIONS_WRITE)
     public ResponseEntity<Object> deleteApp(@PathVariable("id") String id) {
         this.applicationService.deleteById(id);
         return ResponseEntity.ok().build();

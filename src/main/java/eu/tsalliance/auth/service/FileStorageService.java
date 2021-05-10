@@ -9,6 +9,7 @@ import eu.tsalliance.auth.model.user.User;
 import eu.tsalliance.auth.repository.ImageRepository;
 import eu.tsalliance.auth.service.account.UserService;
 import eu.tsalliance.auth.utils.RandomUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ import java.nio.file.Path;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class FileStorageService {
 
     @Autowired
@@ -58,7 +60,7 @@ public class FileStorageService {
             throw new NotFoundException();
         }
 
-        System.out.println(file.getFile().getAbsolutePath());
+        log.error(file.getFile().getAbsolutePath());
 
         response.setContentType(this.storageConfig.MIME_IMAGE_PNG);
         StreamUtils.copy(file.getInputStream(), response.getOutputStream());

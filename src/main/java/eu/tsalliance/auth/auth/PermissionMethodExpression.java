@@ -2,7 +2,6 @@ package eu.tsalliance.auth.auth;
 
 import eu.tsalliance.auth.model.user.Role;
 import eu.tsalliance.auth.model.user.User;
-import eu.tsalliance.auth.service.account.UserService;
 import org.springframework.security.access.expression.SecurityExpressionRoot;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionOperations;
 import org.springframework.security.core.Authentication;

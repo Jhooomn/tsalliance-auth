@@ -18,13 +18,13 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @RequestMapping(path = "@me", method = RequestMethod.GET)
+    @GetMapping(path = "@me")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<User> getCurrent(Authentication authentication) throws NotFoundException {
         return ResponseEntity.of(this.userService.findCurrentUser(authentication));
     }
 
-    @RequestMapping(path = "{id}", method = RequestMethod.GET)
+    @GetMapping(path = "{id}")
     @PreAuthorize("hasPermission('alliance.users.read')")
     public ResponseEntity<User> getUser(@PathVariable("id") String id) {
         return ResponseEntity.of(this.userService.findUserById(id));
