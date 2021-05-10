@@ -1,0 +1,7 @@
+[2021-05-10T08:24:56.159Z] [info]: Connecting to mysql database 'username@localhost:3306/database'
+[2021-05-10T08:24:56.244Z] [error]: Could not connect to database 'username@localhost:3306/database': connect ECONNREFUSED 127.0.0.1:3306
+[2021-05-10T08:24:56.244Z] [info]: Starting nodejs webserver...
+[2021-05-10T08:24:56.246Z] [info]: Listening on port 3333
+[2021-05-10T08:24:56.246Z] [info]: NodeJS Webserver is ready.
+[2021-05-10T08:24:56.247Z] [warn]: Running in insecure mode. (SSL not enabled)
+[2021-05-10T08:24:56.247Z] [warn]: This may be because of a missing ssl certificate and results in non-encrypted requests.
